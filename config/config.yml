@@ -1,0 +1,32 @@
+env: local
+listenPort: :1234
+
+dblist: 
+  app:
+    dbType: mysql
+    dbUrl: root:@tcp(127.0.0.1:3306)/db_billing
+
+appName: AppName
+JWTSecretKey: MyJwtSecretKey
+useJWT: false
+requestTimeout: 5
+debugLevel: 4
+concurrentWaitLimit: 10
+maxConcurrentProcessData: 10
+maxBodyLogLength: 2048 #characters
+
+useRedis: false
+useRedisSentinel: false
+redisSentinel:
+  masterName: mylocalmaster
+  sentinelPassword:
+  sentinelUrl: 
+  - 127.0.0.1:26379
+redis:
+  redisUrl: 127.0.0.1:6379
+  redisPassword:
+  db: 0
+
+log:
+  filenamePrefix: ./log/billingdashboard
+  level: debug
