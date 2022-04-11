@@ -7,7 +7,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR $GOPATH/src/mypackage/myapp/
 COPY . .
 RUN go get -d -v
-RUN go build -ldflags="-w -s -X 'main.version=$VER' -X 'main.builddate=$BUILDDATE'" -o /go/bin/billingdashboard
+RUN go build -ldflags="-w -s -X 'main.version=$VER' -X 'main.builddate=$BUILDDATE'" -o /go/bin/backendbillingdashboard
 
 #Real Image
 FROM alpine
@@ -21,6 +21,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 USER app
 WORKDIR /app
 COPY --chown=app --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --chown=app --from=builder /go/bin/billingdashboard /app/billingdashboard.app
+COPY --chown=app --from=builder /go/bin/backendbillingdashboard /app/backendbillingdashboard.app
 COPY --chown=app config/config.yml /app/config/config.yml
-CMD /app/billingdashboard.app
+CMD /app/backendbillingdashboard.app
