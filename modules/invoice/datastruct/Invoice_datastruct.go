@@ -9,13 +9,13 @@ type InvoiceRequest struct {
 	ListInvoiceID      []string `json:"list_invoiceid"`
 	InvoiceID          string   `json:"invoice_id"`
 	InvoiceNo          string   `json:"invoice_no"`
-	TransDate          string   `json:"transdate"`
+	InvoiceDate        string   `json:"invoice_date"`
 	InvoiceStatus      string   `json:"invoice_status"`
 	AccountID          string   `json:"account_id"`
 	MonthUse           string   `json:"month_use"`
 	InvoiceTypeID      string   `json:"invoice_type_id"`
 	PrintCounter       string   `json:"print_counter"`
-	Desc               string   `json:"desc"`
+	Note               string   `json:"note"`
 	CancelDesc         string   `json:"cancel_desc"`
 	LastPrintUsername  string   `json:"last_print_username"`
 	LastPrintDate      string   `json:"last_print_date"`
@@ -36,13 +36,13 @@ type InvoiceRequest struct {
 type InvoiceDataStruct struct {
 	InvoiceID          string `json:"invoice_id"`
 	InvoiceNo          string `json:"invoice_no"`
-	TransDate          string `json:"transdate"`
+	InvoiceDate        string `json:"invoice_date"`
 	InvoiceStatus      string `json:"invoice_status"`
 	AccountID          string `json:"account_id"`
 	MonthUse           string `json:"month_use"`
 	InvoiceTypeID      string `json:"invoice_type_id"`
 	PrintCounter       string `json:"print_counter"`
-	Desc               string `json:"desc"`
+	Note               string `json:"note"`
 	CancelDesc         string `json:"cancel_desc"`
 	LastPrintUsername  string `json:"last_print_username"`
 	LastPrintDate      string `json:"last_print_date"`
@@ -67,7 +67,7 @@ type InvoiceDetailStruct struct {
 	Qty             string `json:"qty"`
 	Uom             string `json:"uom"`
 	ItemPrice       string `json:"item_price"`
-	Desc            string `json:"desc"`
+	Note            string `json:"note"`
 
 	Item ItemDataStruct `json:"item"`
 }

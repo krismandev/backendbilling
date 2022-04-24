@@ -28,14 +28,14 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 	var single datastruct.InvoiceDataStruct
 	single.InvoiceID, _ = invoice["invoice_id"].(string)
 	single.InvoiceNo, _ = invoice["invoice_no"].(string)
-	single.TransDate, _ = invoice["transdate"].(string)
+	single.InvoiceDate, _ = invoice["invoice_date"].(string)
 	single.InvoiceStatus, _ = invoice["invoicestatus"].(string)
 	single.AccountID, _ = invoice["account_id"].(string)
 	single.MonthUse, _ = invoice["month_use"].(string)
 	single.InvoiceTypeID, _ = invoice["inv_type_id"].(string)
 	single.PrintCounter, _ = invoice["printcounter"].(string)
 	single.PPN, _ = invoice["ppn"].(string)
-	single.Desc, _ = invoice["desc"].(string)
+	single.Note, _ = invoice["note"].(string)
 	single.CancelDesc, _ = invoice["canceldesc"].(string)
 	single.LastPrintUsername, _ = invoice["last_print_username"].(string)
 	single.LastPrintDate, _ = invoice["last_print_date"].(string)
@@ -75,7 +75,7 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 		detail.ItemPrice = eachDetail["item_price"].(string)
 		detail.Qty = eachDetail["qty"].(string)
 		detail.Uom = eachDetail["uom"].(string)
-		detail.Desc = eachDetail["desc"].(string)
+		detail.Note = eachDetail["note"].(string)
 
 		var item datastruct.ItemDataStruct
 		item.ItemID = eachDetail["item"].(map[string]interface{})["item_id"].(string)

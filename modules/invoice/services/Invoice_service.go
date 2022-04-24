@@ -42,7 +42,7 @@ func CreateInvoice(ctx context.Context, req dt.InvoiceRequest, conn *connections
 	var err error
 
 	// validate input
-	if len(req.AccountID) == 0 || len(req.InvoiceTypeID) == 0 || len(req.MonthUse) == 0 || len(req.TransDate) == 0 {
+	if len(req.AccountID) == 0 || len(req.InvoiceTypeID) == 0 || len(req.MonthUse) == 0 || len(req.InvoiceDate) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}
@@ -70,7 +70,7 @@ func UpdateInvoice(ctx context.Context, req dt.InvoiceRequest, conn *connections
 	var err error
 
 	// validate input
-	if len(req.InvoiceID) == 0 || len(req.MonthUse) == 0 || len(req.TransDate) == 0 || len(req.InvoiceNo) == 0 {
+	if len(req.InvoiceID) == 0 || len(req.MonthUse) == 0 || len(req.InvoiceDate) == 0 || len(req.InvoiceNo) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}
@@ -127,7 +127,7 @@ func CancelInvoice(ctx context.Context, req dt.InvoiceRequest, conn *connections
 
 	// validate input
 	if len(req.InvoiceID) == 0 || len(req.CancelDesc) < 10 {
-		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
+		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, "Incomplete Request. Cancel description min 10 character", err)
 		return response
 	}
 

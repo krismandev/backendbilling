@@ -6,6 +6,7 @@ import (
 	accountRoute "billingdashboard/modules/account/routes"
 	categoryRoute "billingdashboard/modules/category/routes"
 	companyRoute "billingdashboard/modules/company/routes"
+	configRoute "billingdashboard/modules/config/routes"
 	invoiceTypeRoute "billingdashboard/modules/invoice-type/routes"
 	invoiceRoute "billingdashboard/modules/invoice/routes"
 	itemPriceRoute "billingdashboard/modules/item-price/routes"
@@ -30,5 +31,6 @@ func InitRoutes(conn *connections.Connections, version, builddate string) {
 	invoiceRoute.InitRoutes(conn)
 	serverDataRoute.InitRoutes(conn)
 	invoiceTypeRoute.InitRoutes(conn)
+	configRoute.InitRoutes(conn)
 	// ...
 }
