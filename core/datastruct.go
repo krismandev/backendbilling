@@ -51,12 +51,11 @@ type GlobalSingleResponse struct {
 
 // DataTableParam is used for
 type DataTableParam struct {
-	LastID       string `json:"last_id"`
-	PerPage      int    `json:"per_page"`
-	Page         int    `json:"page"`
-	OrderBy      string `json:"order_by"`
-	OrderDir     string `json:"order_dir"`
-	NoPagination bool   `json:"no_pagination"`
+	LastID   string `json:"last_id"`
+	PerPage  int    `json:"per_page"`
+	Page     int    `json:"page"`
+	OrderBy  string `json:"order_by"`
+	OrderDir string `json:"order_dir"`
 }
 
 //GetLogFieldValues is  use for Set Log Fields

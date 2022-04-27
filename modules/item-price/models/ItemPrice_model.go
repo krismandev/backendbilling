@@ -4,6 +4,9 @@ import (
 	"billingdashboard/connections"
 	"billingdashboard/lib"
 	"billingdashboard/modules/item-price/datastruct"
+	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 func GetItemPriceFromRequest(conn *connections.Connections, req datastruct.ItemPriceRequest) ([]map[string]interface{}, error) {
@@ -32,7 +35,7 @@ func GetItemPriceFromRequest(conn *connections.Connections, req datastruct.ItemP
 	}
 
 	// lib.AppendOrderBy(&runQuery, "item_price.item_id", req.Param.OrderDir)
-	// lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
 	resultSelect, _, errSelect := conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
 	if errSelect != nil {
@@ -159,10 +162,10 @@ func InsertItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequ
 
 			errCheck := CheckItemPriceDuplicate("", conn, each)
 			if errCheck != nil {
-				// errUpdate := UpdateItemPriceHelper(conn, each)
-				// if errUpdate != nil {
-				// 	return errUpdate
-				// }
+				errUpdate := UpdateItemPriceHelper(conn, each)
+				if errUpdate != nil {
+					return errUpdate
+				}
 			} else {
 				qry := "INSERT INTO item_price (item_id, account_id,price,server_id,tiering) VALUES (" + baseInputForList + ")"
 				_, _, errInsert := conn.DBAppConn.Exec(qry, baseParamForList...)
@@ -232,6 +235,51 @@ func UpdateItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequ
 
 			}
 
+		}
+
+	}
+
+	return err
+}
+
+func BulkUpdateItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequest) error {
+	var err error
+
+	// -- THIS IS BASIC INSERT EXAMPLE
+	var baseIn string
+	var baseParam []interface{}
+
+	if len(req.ListItemPrice) == 0 {
+		lib.AppendComma(&baseIn, &baseParam, "?", req.ItemID)
+		lib.AppendComma(&baseIn, &baseParam, "?", req.AccountID)
+		lib.AppendComma(&baseIn, &baseParam, "?", req.Price)
+		lib.AppendComma(&baseIn, &baseParam, "?", req.ServerID)
+
+		qry := "INSERT INTO item_price (item_id, account_id,price,server_id) VALUES (" + baseIn + ")"
+		_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
+	} else if len(req.ListItemPrice) != 0 {
+
+		bulkUpdateQuery := "INSERT INTO item_price (item_price.item_id, item_price.account_id,item_price.price,item_price.server_id,item_price.tiering) VALUES"
+		var paramsBulkUpdate []interface{}
+		var stringGroup []string
+
+		for _, each := range req.ListItemPrice {
+
+			partquery := "(?, ?, ?, ?, ?)"
+			paramsBulkUpdate = append(paramsBulkUpdate, each.ItemID)
+			paramsBulkUpdate = append(paramsBulkUpdate, each.AccountID)
+			paramsBulkUpdate = append(paramsBulkUpdate, each.Price)
+			paramsBulkUpdate = append(paramsBulkUpdate, each.ServerID)
+			paramsBulkUpdate = append(paramsBulkUpdate, "0")
+			stringGroup = append(stringGroup, partquery)
+
+		}
+		final_query := bulkUpdateQuery + strings.Join(stringGroup, ", ") + " ON DUPLICATE KEY UPDATE price = VALUES(item_price.price)"
+		logrus.Info("FinalQuery", final_query)
+		_, _, errInsert := conn.DBAppConn.Exec(final_query, paramsBulkUpdate...)
+		if errInsert != nil {
+			logrus.Error("Error BulkUpdateItemPrice Sender SMSC : " + errInsert.Error())
+			return errInsert
 		}
 
 	}

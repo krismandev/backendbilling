@@ -33,11 +33,7 @@ func GetAccountFromRequest(conn *connections.Connections, req datastruct.Account
 		runQuery += "WHERE " + baseWhere
 	}
 	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
-	if req.Param.NoPagination == true {
-		//DO Nothing
-	} else {
-		lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
-	}
+	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
 	result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
 	return result, err

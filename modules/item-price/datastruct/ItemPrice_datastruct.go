@@ -13,7 +13,10 @@ type ItemPriceRequest struct {
 	ServerID        string                `json:"server_id"`
 	Price           string                `json:"price"`
 	Category        string                `json:"category"`
-	Param           core.DataTableParam   `json:"param"`
+
+	ListAccountID []string            `json:"list_account_id"`
+	ListServerID  []string            `json:"list_server_id"`
+	Param         core.DataTableParam `json:"param"`
 }
 
 type ItemPriceDataStruct struct {

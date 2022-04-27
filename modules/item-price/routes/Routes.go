@@ -13,6 +13,7 @@ import (
 
 func InitRoutes(conn *connections.Connections) {
 	ItemPriceRoute(conn)
+	BulkUpdateItemPriceRoute(conn)
 }
 
 // ItemPriceRoute is used for
@@ -47,4 +48,17 @@ func ItemPriceRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/item-price", stubRoute)
+}
+
+func BulkUpdateItemPriceRoute(conn *connections.Connections) {
+	cancelInvoiceRoute := mux.NewRouter()
+	cancelInvoiceRoute.Methods("PATCH").Handler(httptransport.NewServer(
+		transport.BulkUpdateItemPriceEndpoint(conn),
+		transport.ItemPriceDecodeRequest,
+		transport.ItemPriceSingleEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+
+	http.Handle("/item-price/bulk-update", cancelInvoiceRoute)
 }

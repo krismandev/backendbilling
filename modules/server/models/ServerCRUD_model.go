@@ -19,13 +19,13 @@ func GetServerFromRequest(conn *connections.Connections, req datastruct.ServerRe
 
 	lib.AppendWhere(&baseWhere, &baseParam, "server_id = ?", req.ServerID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_name = ?", req.ServerName)
-	// if len(req.ListServerID) > 0 {
-	// 	var baseIn string
-	// 	for _, prid := range req.ListServerID {
-	// 		lib.AppendComma(&baseIn, &baseParam, "?", prid)
-	// 	}
-	// 	lib.AppendWhereRaw(&baseWhere, "server_id IN ("+baseIn+")")
-	// }
+	if len(req.ListServerID) > 0 {
+		var baseIn string
+		for _, prid := range req.ListServerID {
+			lib.AppendComma(&baseIn, &baseParam, "?", prid)
+		}
+		lib.AppendWhereRaw(&baseWhere, "server_id IN ("+baseIn+")")
+	}
 
 	runQuery := "SELECT server_id, server_name, server_url FROM server "
 	if len(baseWhere) > 0 {

@@ -144,3 +144,47 @@ func DeleteItemPrice(ctx context.Context, req dt.ItemPriceRequest, conn *connect
 
 	return response
 }
+
+// UpdateItemPrice is use for
+func BulkUpdateItemPrice(ctx context.Context, req dt.ItemPriceRequest, conn *connections.Connections) core.GlobalSingleResponse {
+	log.Infof("ItemPriceService.BulkUpdateItemPrice Request : %+v", req)
+	var response = core.DefaultGlobalSingleResponse(ctx)
+	var err error
+
+	// validate input
+	// if len(req.ItemID) == 0 || len(req.AccountID) == 0 || len(req.ServerID) == 0 || len(req.Price) == 0 {
+	// 	core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
+	// 	return response
+	// }
+
+	if len(req.ListItemPrice) == 0 {
+		if len(req.ItemID) == 0 || len(req.AccountID) == 0 || len(req.ServerID) == 0 || len(req.Price) == 0 {
+			core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
+			return response
+		}
+		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
+		return response
+	}
+
+	// block request if old data is not exists
+	// err = models.CheckItemPriceExists(req.ItemID, conn)
+	// if err != nil {
+	// 	core.ErrorGlobalSingleResponse(&response, core.ErrNoData, core.DescNoData, err)
+	// 	return response
+	// }
+
+	// block request if data is already exists
+	// err = models.CheckItemPriceDuplicate(req.ItemID, conn, req)
+	// if err != nil {
+	// 	core.ErrorGlobalSingleResponse(&response, core.ErrDataExists, err.Error(), err)
+	// 	return response
+	// }
+
+	// process input
+	response.Data, err = processors.BulkUpdateItemPrice(conn, req)
+	if err != nil {
+		core.ErrorGlobalSingleResponse(&response, core.ErrServer, core.DescServer, err)
+	}
+
+	return response
+}

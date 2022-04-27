@@ -108,6 +108,25 @@ func UpdateItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequ
 	return output, err
 }
 
+func BulkUpdateItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequest) (datastruct.ItemPriceDataStruct, error) {
+	var output datastruct.ItemPriceDataStruct
+	var err error
+
+	err = models.BulkUpdateItemPrice(conn, req)
+	if err != nil {
+		return output, err
+	}
+
+	// jika tidak ada error, return single instance of single stub
+	// single, err := models.GetSingleItemPrice(req.ItemPriceID, conn, req)
+	// if err != nil {
+	// 	return output, err
+	// }
+
+	// output = CreateSingleItemPriceStruct(single)
+	return output, err
+}
+
 func DeleteItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequest) error {
 	err := models.DeleteItemPrice(conn, req)
 	return err

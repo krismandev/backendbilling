@@ -54,7 +54,7 @@ func CheckItemPriceDuplicate(exceptID string, conn *connections.Connections, req
 
 	datacount, _ := strconv.Atoi(cnt)
 	if datacount > 0 {
-		return errors.New("ItemPrice is already exists. Please use another server, account, or item")
+		return errors.New("ItemPrice is already exists. Please use another server, account, or category")
 	}
 	return nil
 }
