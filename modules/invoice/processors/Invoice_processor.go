@@ -45,6 +45,7 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 	single.LastUpdateDate, _ = invoice["last_update_date"].(string)
 	single.DiscountType, _ = invoice["discount_type"].(string)
 	single.Discount, _ = invoice["discount"].(string)
+	single.Paid, _ = invoice["paid"].(string)
 
 	var invoiceType datastruct.InvoiceTypeDataStruct
 	invoiceType.InvoiceTypeID = invoice["invoice_type"].(map[string]interface{})["inv_type_id"].(string)

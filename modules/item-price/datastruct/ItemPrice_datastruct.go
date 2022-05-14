@@ -6,25 +6,29 @@ import (
 
 //LoginRequest is use for clients login
 type ItemPriceRequest struct {
-	ListItemPriceID []string              `json:"list_item-price_id"`
-	ListItemPrice   []ItemPriceDataStruct `json:"list_item_price"`
-	ItemID          string                `json:"item_id"`
-	AccountID       string                `json:"account_id"`
-	ServerID        string                `json:"server_id"`
-	Price           string                `json:"price"`
-	Category        string                `json:"category"`
+	ListItemPriceID    []string              `json:"list_item-price_id"`
+	ListItemPrice      []ItemPriceDataStruct `json:"list_item_price"`
+	ItemID             string                `json:"item_id"`
+	AccountID          string                `json:"account_id"`
+	ServerID           string                `json:"server_id"`
+	Price              string                `json:"price"`
+	Category           string                `json:"category"`
+	LastUpdateUsername string                `json:"last_update_username"`
 
 	ListAccountID []string            `json:"list_account_id"`
 	ListServerID  []string            `json:"list_server_id"`
+	ListItemID    []string            `json:"list_item_id"`
 	Param         core.DataTableParam `json:"param"`
 }
 
 type ItemPriceDataStruct struct {
-	ItemID    string `json:"item_id"`
-	AccountID string `json:"account_id"`
-	ServerID  string `json:"server_id"`
-	Price     string `json:"price"`
-	Category  string `json:"category"`
+	ItemID             string `json:"item_id"`
+	AccountID          string `json:"account_id"`
+	ServerID           string `json:"server_id"`
+	Price              string `json:"price"`
+	Category           string `json:"category"`
+	LastUpdateUsername string `json:"last_update_username"`
+	LastUpdateDate     string `json:"last_update_date"`
 
 	Account AccountDataStruct `json:"account"`
 	Server  ServerDataStruct  `json:"server"`

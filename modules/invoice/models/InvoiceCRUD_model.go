@@ -5,6 +5,8 @@ import (
 	"billingdashboard/lib"
 	"billingdashboard/modules/invoice/datastruct"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.InvoiceRequest) ([]map[string]interface{}, error) {
@@ -18,6 +20,8 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 
 	lib.AppendWhere(&baseWhere, &baseParam, "invoice_id = ?", req.InvoiceID)
 	lib.AppendWhere(&baseWhere, &baseParam, "invoicestatus = ?", "A")
+	lib.AppendWhere(&baseWhere, &baseParam, "invoice.account_id = ?", req.AccountID)
+	lib.AppendWhere(&baseWhere, &baseParam, "invoice.paid = ?", req.Paid)
 	if len(req.ListInvoiceID) > 0 {
 		var baseIn string
 		for _, prid := range req.ListInvoiceID {
@@ -27,7 +31,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 	}
 
 	//TERAKHIR NAMBAH QUERY BUAT NAMPILIN ACCOUNT
-	runQuery := "SELECT invoice.invoice_id, invoice.invoice_no, invoice.invoice_date, invoice.invoicestatus, invoice.account_id, invoice.month_use, invoice.inv_type_id, invoice.printcounter, invoice.note, invoice.canceldesc, invoice.last_print_username, invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.last_update_date, invoice.discount_type, invoice.discount, invoice.ppn , invoice_type.inv_type_id as tblinvoice_type_inv_type_id, invoice_type.inv_type_name, invoice_type.server_id as tblinvoice_type_server_id, invoice_type.category, invoice_type.load_from_server, account.account_id as tblaccount_account_id, account.name as tblaccount_name, account.address1, account.address2, account.city, account.phone, account.contact_person, account.contact_person_phone FROM invoice JOIN invoice_type ON invoice.inv_type_id = invoice_type.inv_type_id JOIN account ON invoice.account_id = account.account_id "
+	runQuery := "SELECT invoice.invoice_id, invoice.invoice_no, invoice.invoice_date, invoice.invoicestatus, invoice.account_id, invoice.month_use, invoice.inv_type_id, invoice.printcounter, invoice.note, invoice.canceldesc, invoice.last_print_username, invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.last_update_date, invoice.discount_type, invoice.discount, invoice.ppn ,invoice.paid, invoice_type.inv_type_id as tblinvoice_type_inv_type_id, invoice_type.inv_type_name, invoice_type.server_id as tblinvoice_type_server_id, invoice_type.category, invoice_type.load_from_server, account.account_id as tblaccount_account_id, account.name as tblaccount_name, account.address1, account.address2, account.city, account.phone, account.contact_person, account.contact_person_phone FROM invoice JOIN invoice_type ON invoice.inv_type_id = invoice_type.inv_type_id JOIN account ON invoice.account_id = account.account_id "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -60,6 +64,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 		single["last_update_date"] = each["last_update_date"]
 		single["discount_type"] = each["discount_type"]
 		single["discount"] = each["discount"]
+		single["paid"] = each["paid"]
 
 		invType := make(map[string]interface{})
 		invType["inv_type_id"] = each["tblinvoice_type_inv_type_id"]
@@ -117,6 +122,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 
 		// var category
 		result = append(result, single)
+		logrus.Info("LihatData", single)
 	}
 	return result, err
 }

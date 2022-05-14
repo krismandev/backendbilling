@@ -22,6 +22,30 @@ func GetItemPriceFromRequest(conn *connections.Connections, req datastruct.ItemP
 	lib.AppendWhere(&baseWhere, &baseParam, "item_price.server_id = ?", req.ServerID)
 	lib.AppendWhere(&baseWhere, &baseParam, "item.category = ?", req.Category)
 
+	if len(req.ListAccountID) > 0 {
+		var listAccountParam string
+		for _, prid := range req.ListAccountID {
+			lib.AppendComma(&listAccountParam, &baseParam, "?", prid)
+		}
+		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+listAccountParam+")")
+	}
+
+	if len(req.ListServerID) > 0 {
+		var listServerParam string
+		for _, prid := range req.ListServerID {
+			lib.AppendComma(&listServerParam, &baseParam, "?", prid)
+		}
+		lib.AppendWhereRaw(&baseWhere, "server_id IN ("+listServerParam+")")
+	}
+
+	if len(req.ListItemID) > 0 {
+		var listItemParam string
+		for _, prid := range req.ListItemID {
+			lib.AppendComma(&listItemParam, &baseParam, "?", prid)
+		}
+		lib.AppendWhereRaw(&baseWhere, "item_price.item_id IN ("+listItemParam+")")
+	}
+
 	// SELECT distinct item_price.account_id, item_price.server_id, item.category from item_price INNER JOIN item on item.item_id=item_price.item_id;
 
 	runQuery := "SELECT distinct item_price.account_id, item_price.server_id, item.category from item_price INNER JOIN item on item.item_id=item_price.item_id"
@@ -29,11 +53,11 @@ func GetItemPriceFromRequest(conn *connections.Connections, req datastruct.ItemP
 		runQuery = "SELECT item_price.item_id, item_price.account_id, item_price.server_id, item_price.price from item_price INNER JOIN item ON item.item_id=item_price.item_id"
 		if len(req.AccountID) > 0 && len(req.ServerID) > 0 && len(req.ServerID) > 0 && len(req.ItemID) == 0 {
 			runQuery = "SELECT item_price.item_id, item_price.account_id, item_price.server_id, item_price.price, item.item_name, item.uom from item_price INNER JOIN item ON item.item_id=item_price.item_id"
-
 		}
 		runQuery += " WHERE " + baseWhere
 	}
 
+	logrus.Info("FinalQuery", runQuery)
 	// lib.AppendOrderBy(&runQuery, "item_price.item_id", req.Param.OrderDir)
 	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
@@ -259,22 +283,23 @@ func BulkUpdateItemPrice(conn *connections.Connections, req datastruct.ItemPrice
 		_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
 	} else if len(req.ListItemPrice) != 0 {
 
-		bulkUpdateQuery := "INSERT INTO item_price (item_price.item_id, item_price.account_id,item_price.price,item_price.server_id,item_price.tiering) VALUES"
+		bulkUpdateQuery := "INSERT INTO item_price (item_price.item_id, item_price.account_id,item_price.price,item_price.server_id,item_price.tiering, item_price.last_update_username) VALUES"
 		var paramsBulkUpdate []interface{}
 		var stringGroup []string
 
 		for _, each := range req.ListItemPrice {
 
-			partquery := "(?, ?, ?, ?, ?)"
+			partquery := "(?, ?, ?, ?, ?, ?)"
 			paramsBulkUpdate = append(paramsBulkUpdate, each.ItemID)
 			paramsBulkUpdate = append(paramsBulkUpdate, each.AccountID)
 			paramsBulkUpdate = append(paramsBulkUpdate, each.Price)
 			paramsBulkUpdate = append(paramsBulkUpdate, each.ServerID)
 			paramsBulkUpdate = append(paramsBulkUpdate, "0")
+			paramsBulkUpdate = append(paramsBulkUpdate, req.LastUpdateUsername)
 			stringGroup = append(stringGroup, partquery)
 
 		}
-		final_query := bulkUpdateQuery + strings.Join(stringGroup, ", ") + " ON DUPLICATE KEY UPDATE price = VALUES(item_price.price)"
+		final_query := bulkUpdateQuery + strings.Join(stringGroup, ", ") + " ON DUPLICATE KEY UPDATE price = VALUES(item_price.price), last_update_username = VALUES(item_price.last_update_username)"
 		logrus.Info("FinalQuery", final_query)
 		_, _, errInsert := conn.DBAppConn.Exec(final_query, paramsBulkUpdate...)
 		if errInsert != nil {

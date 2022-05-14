@@ -26,6 +26,7 @@ type InvoiceRequest struct {
 	DiscountType       string   `json:"discount_type"`
 	Discount           string   `json:"discount"`
 	PPN                string   `json:"ppn"`
+	Paid               string   `json:"paid"`
 
 	ServerID          string                `json:"server_id"`
 	ListInvoiceDetail []InvoiceDetailStruct `json:"list_invoice_detail"`
@@ -53,6 +54,7 @@ type InvoiceDataStruct struct {
 	DiscountType       string `json:"discount_type"`
 	Discount           string `json:"discount"`
 	PPN                string `json:"ppn"`
+	Paid               string `json:"paid"`
 
 	InvoiceType InvoiceTypeDataStruct `json:"invoice_type"`
 	Account     AccountDataStruct     `json:"account"`
