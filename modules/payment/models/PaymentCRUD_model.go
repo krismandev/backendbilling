@@ -32,9 +32,9 @@ func GetPaymentFromRequest(conn *connections.Connections, req datastruct.Payment
 
 	var runQuery string
 	if len(req.AccountID) > 0 {
-		runQuery = "SELECT payment_id, payment.invoice_id, payment_date, total, payment.note, payment.created_by, username, invoice.account_id, invoice.invoice_no, account.name as account_name, payment.payment_method, payment.card_number FROM db_billing.payment JOIN invoice ON invoice.invoice_id = payment.invoice_id JOIN account ON account.account_id = invoice.account_id "
+		runQuery = "SELECT payment_id, payment.invoice_id, payment.payment_date, payment.total, payment.note, payment.created_by, username,  payment.payment_method, payment.card_number, invoice.account_id, invoice.invoice_no, account.name as account_name, payment.payment_method, payment.card_number FROM db_billing.payment JOIN invoice ON invoice.invoice_id = payment.invoice_id JOIN account ON account.account_id = invoice.account_id "
 	} else {
-		runQuery = "SELECT payment_id, payment.invoice_id, payment_date, total, note, created_by, username, payment.payment_method, payment.card_number FROM payment "
+		runQuery = "SELECT payment_id, payment.invoice_id, payment.payment_date, payment.total, payment.note, payment.created_by, username,  payment.payment_method, payment.card_number, invoice.account_id, invoice.invoice_no, account.name as account_name, payment.payment_method, payment.card_number FROM db_billing.payment JOIN invoice ON invoice.invoice_id = payment.invoice_id JOIN account ON account.account_id = invoice.account_id "
 	}
 
 	if len(baseWhere) > 0 {
@@ -43,7 +43,7 @@ func GetPaymentFromRequest(conn *connections.Connections, req datastruct.Payment
 
 	logrus.Info("LihatQuery-", runQuery)
 
-	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+	lib.AppendOrderBy(&runQuery, "payment.created_at", "desc")
 	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
 	resultSelect, _, err := conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
