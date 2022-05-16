@@ -20,7 +20,7 @@ func GetPaymentFromRequest(conn *connections.Connections, req datastruct.Payment
 	var baseParam []interface{}
 
 	lib.AppendWhere(&baseWhere, &baseParam, "payment_id = ?", req.PaymentID)
-	lib.AppendWhere(&baseWhere, &baseParam, "invoice_id = ?", req.InvoiceID)
+	lib.AppendWhere(&baseWhere, &baseParam, "payment.invoice_id = ?", req.InvoiceID)
 	lib.AppendWhere(&baseWhere, &baseParam, "account.account_id = ?", req.AccountID)
 	if len(req.ListPaymentID) > 0 {
 		var baseIn string
