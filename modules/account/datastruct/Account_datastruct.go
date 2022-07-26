@@ -40,3 +40,15 @@ type AccountDataStruct struct {
 	ContactPersonPhone string `json:"contact_person_phone"`
 	LastUpdateUsername string `json:"last_update_username"`
 }
+
+type RootParentAccountRequest struct {
+	ListAccountID     []string            `json:"list_account_id"`
+	AccountID         string              `json:"account_id"`
+	RootParentAccount string              `json:"root_parent_account"`
+	Param             core.DataTableParam `json:"param"`
+}
+
+type RootParentAccountDataStruct struct {
+	AccountID         string `json:"account_id"`
+	RootParentAccount string `json:"root_parent_account"`
+}

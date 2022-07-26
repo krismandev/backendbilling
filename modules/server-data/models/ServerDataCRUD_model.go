@@ -5,7 +5,7 @@ import (
 	"billingdashboard/lib"
 	"billingdashboard/modules/server-data/datastruct"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func GetServerDataFromRequest(conn *connections.Connections, req datastruct.ServerDataRequest) ([]map[string]interface{}, error) {
@@ -20,6 +20,7 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data_id = ?", req.ServerDataID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.server_id = ?", req.ServerID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.account_id = ?", req.AccountID)
+	lib.AppendWhere(&baseWhere, &baseParam, "server_data.external_rootparent_account = ?", req.ExternalRootParentAccount)
 	lib.AppendWhere(&baseWhere, &baseParam, "DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?", req.MonthUse)
 	lib.AppendWhereRaw(&baseWhere, "server_data.invoice_id IS NULL")
 
@@ -32,13 +33,13 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	}
 
 	// runQuery := "SELECT server_data_id, server_id, server_account, item_id, account_id, external_smscount,external_transdate, external_transcount, invoice_id FROM server_data "
-	runQuery := "SELECT server_data.server_data_id, server_data.server_id, server_data.server_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, server_data.external_transcount, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, IF(server_data.external_price IS NOT NULL, server_data.external_price, item_price.price) as price, item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  FROM server_data JOIN item ON server_data.item_id=item.item_id JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id AND server_data.account_id=item_price.account_id"
+	runQuery := "SELECT server_data.server_data_id, server_data.server_id, server_data.external_account_id, server_data.external_rootparent_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, server_data.external_transcount, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, IF(server_data.external_price IS NOT NULL, server_data.external_price, item_price.price) as price, item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  FROM server_data JOIN item ON server_data.item_id=item.item_id JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id AND server_data.account_id=item_price.account_id"
 	if len(baseWhere) > 0 {
 		runQuery += " WHERE " + baseWhere
 	}
-	logrus.Info("LihatQuery-", runQuery)
-	// lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
-	// lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+	log.Info("final query:", runQuery)
+	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
 	resultQuery, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
 
@@ -47,10 +48,12 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		single["server_data_id"] = each["server_data_id"]
 		single["account_id"] = each["account_id"]
 		single["server_id"] = each["server_id"]
-		single["server_account"] = each["server_account"]
+		single["external_account_id"] = each["external_account_id"]
+		single["external_rootparent_account"] = each["external_rootparent_account"]
 		single["item_id"] = each["item_id"]
 		single["account_id"] = each["account_id"]
 		single["external_transdate"] = each["external_transdate"]
+		single["external_price"] = each["price"]
 		// single["external_user_id"] = each["external_user_id"]
 		// single["external_sender"] = each["external_sender"]
 		// single["external_operatorcode"] = each["external_operatorcode"]

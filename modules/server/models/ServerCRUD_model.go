@@ -98,13 +98,14 @@ func GetServerAccountFromRequest(conn *connections.Connections, req datastruct.S
 	var baseParam []interface{}
 
 	lib.AppendWhere(&baseWhere, &baseParam, "server_id = ?", req.ServerID)
-	// if len(req.ListServerID) > 0 {
-	// 	var baseIn string
-	// 	for _, prid := range req.ListServerID {
-	// 		lib.AppendComma(&baseIn, &baseParam, "?", prid)
-	// 	}
-	// 	lib.AppendWhereRaw(&baseWhere, "server_id IN ("+baseIn+")")
-	// }
+	lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
+	if len(req.ListAccountID) > 0 {
+		var baseIn string
+		for _, accId := range req.ListAccountID {
+			lib.AppendComma(&baseIn, &baseParam, "?", accId)
+		}
+		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
+	}
 
 	runQuery := "SELECT server_id, account_id ,serveraccount, last_update_username, last_update_date FROM server_account "
 	if len(baseWhere) > 0 {

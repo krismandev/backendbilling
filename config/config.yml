@@ -1,11 +1,17 @@
 env: local
-listenPort: :1234
+listenPort: :1917
 
 dblist: 
   app:
     dbType: mysql
-    dbUrl: root:@tcp(127.0.0.1:3306)/db_billing
+    dbUrl: krisman:maef0mei3uigh1U@tcp(127.0.0.1:30007)/dbbilling
 
+  dashb:
+    dbType: mysql
+    dbUrl: krisman:d30f610eaa@tcp(127.0.0.1:3310)/dashboard?parseTime=True
+  ocs:
+    dbType: mysql
+    dbUrl: krisman:maef0mei3uigh1U@tcp(127.0.0.1:30007)/ocs?parseTime=True
 appName: AppName
 JWTSecretKey: MyJwtSecretKey
 useJWT: false

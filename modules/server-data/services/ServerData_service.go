@@ -7,6 +7,7 @@ import (
 	"billingdashboard/modules/server-data/models"
 	"billingdashboard/modules/server-data/processors"
 	"context"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -34,6 +35,46 @@ func ListServerData(ctx context.Context, req dt.ServerDataRequest, conn *connect
 	}
 
 	return response
+}
+
+func LoadServerData(ctx context.Context, req dt.ServerDataRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("ServerDataService.LoadServerData Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+
+	// jakartaTime, _ := time.LoadLocation("Asia/Jakarta")
+	// scheduler := cron.New(cron.WithLocation(jakartaTime))
+
+	// defer scheduler.Stop()
+
+	// scheduler.AddFunc("*/2 * * * *", TestCron)
+	// go scheduler.Start()
+	// // trap SIGINT untuk trigger shutdown.
+	// sig := make(chan os.Signal, 1)
+	// signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	// <-sig
+	go func() {
+		for true {
+			// log.Info("Hello !!")
+			models.LoadServerData(conn, req)
+			time.Sleep(3600 * time.Second)
+
+		}
+	}()
+	// ticker := time.NewTicker(1 * time.Second)
+	// go func() {
+	// 	for range ticker.C {
+	// 		fmt.Println("Hello !!")
+	// 	}
+	// }()
+
+	// // wait for 10 seconds
+	// time.Sleep(10 * time.Second)
+	// ticker.Stop()
+	return response
+}
+
+func TestCron() {
+	log.Info("TestHallo")
 }
 
 // CreateServerData is use for

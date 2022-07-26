@@ -112,3 +112,45 @@ func DeleteAccount(conn *connections.Connections, req datastruct.AccountRequest)
 	_, _, err = conn.DBAppConn.Exec(qry, req.AccountID)
 	return err
 }
+
+func GetRootParentAccountFromRequest(conn *connections.Connections, req datastruct.RootParentAccountRequest) ([]map[string]string, error) {
+	var result []map[string]string
+	var err error
+
+	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
+	// var baseWhere string
+	// var baseParam []interface{}
+
+	// lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
+	// lib.AppendWhere(&baseWhere, &baseParam, "company_id = ?", req.CompanyID)
+	// lib.AppendWhere(&baseWhere, &baseParam, "name = ?", req.Name)
+
+	if len(req.ListAccountID) > 0 {
+		// var baseIn string
+		// for _, prid := range req.ListAccountID {
+		// 	lib.AppendComma(&baseIn, &baseParam, "?", prid)
+		// }
+		// lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
+		for _, accountId := range req.ListAccountID {
+			rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT ocs.getrootparent(?) as root", accountId)
+			if errQry != nil {
+				return result, errQry
+			}
+
+			single := make(map[string]string)
+			single["account_id"] = accountId
+			single["root_parent_account"] = rootParentAccount
+			result = append(result, single)
+		}
+
+	}
+
+	// if len(baseWhere) > 0 {
+	// 	runQuery += "WHERE " + baseWhere
+	// }
+	// lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+	// lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+
+	// result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
+	return result, err
+}

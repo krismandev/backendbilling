@@ -120,3 +120,26 @@ func DeleteAccount(ctx context.Context, req dt.AccountRequest, conn *connections
 
 	return response
 }
+
+// ListStub is use for
+func ListRootParentAccount(ctx context.Context, req dt.RootParentAccountRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("CompanyService.ListRootParentAccount Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	listRootParentAccount, err := processors.GetListRootParentAccount(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listRootParentAccount {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}

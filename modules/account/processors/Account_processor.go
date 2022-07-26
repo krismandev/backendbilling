@@ -85,3 +85,34 @@ func DeleteAccount(conn *connections.Connections, req datastruct.AccountRequest)
 	err := models.DeleteAccount(conn, req)
 	return err
 }
+
+func GetListRootParentAccount(conn *connections.Connections, req datastruct.RootParentAccountRequest) ([]datastruct.RootParentAccountDataStruct, error) {
+	var output []datastruct.RootParentAccountDataStruct
+	var err error
+
+	// grab mapping data from model
+	rootParentAccountList, err := models.GetRootParentAccountFromRequest(conn, req)
+	if err != nil {
+		return output, err
+	}
+
+	for _, rootParentAccount := range rootParentAccountList {
+		single := CreateSingleRootParentAccountStruct(rootParentAccount)
+		output = append(output, single)
+	}
+
+	return output, err
+}
+
+func CreateSingleRootParentAccountStruct(rootParentAccount map[string]string) datastruct.RootParentAccountDataStruct {
+	var single datastruct.RootParentAccountDataStruct
+	single.AccountID = rootParentAccount["account_id"]
+	var rootParentAccountId string
+	if rootParentAccount["root_parent_account"] == "NULL" {
+		rootParentAccountId = ""
+	} else {
+		rootParentAccountId = rootParentAccount["root_parent_account"]
+	}
+	single.RootParentAccount = rootParentAccountId
+	return single
+}
