@@ -6,6 +6,7 @@ import (
 	"billingdashboard/modules/account/datastruct"
 	"strconv"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,6 +20,9 @@ func GetAccountFromRequest(conn *connections.Connections, req datastruct.Account
 
 	lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
 	lib.AppendWhere(&baseWhere, &baseParam, "company_id = ?", req.CompanyID)
+	lib.AppendWhere(&baseWhere, &baseParam, "billing_type = ?", req.BillingType)
+	lib.AppendWhere(&baseWhere, &baseParam, "account_type = ?", req.AccountType)
+	lib.AppendWhere(&baseWhere, &baseParam, "status = ?", req.Status)
 	lib.AppendWhere(&baseWhere, &baseParam, "name = ?", req.Name)
 	if len(req.ListAccountID) > 0 {
 		var baseIn string
@@ -154,3 +158,185 @@ func GetRootParentAccountFromRequest(conn *connections.Connections, req datastru
 	// result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
 	return result, err
 }
+
+//Get Root Account by Invoice Type Id
+func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.AccountRequest) ([]map[string]string, error) {
+	var result []map[string]string
+	var err error
+	logrus.Info("Test")
+
+	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
+	var baseWhereInvoiceType string
+	var baseParamInvoiceType []interface{}
+
+	lib.AppendWhere(&baseWhereInvoiceType, &baseParamInvoiceType, "inv_type_id = ?", req.InvoiceTypeID)
+
+	runQueryInvoiceType := "SELECT inv_type_id, inv_type_name, server_id, category, load_from_server FROM invoice_type "
+	if len(baseWhereInvoiceType) > 0 {
+		runQueryInvoiceType += "WHERE " + baseWhereInvoiceType
+	}
+
+	resultInvoiceType, _, err := conn.DBAppConn.SelectQueryByFieldNameSlice(runQueryInvoiceType, baseParamInvoiceType...)
+
+	if len(resultInvoiceType) > 0 {
+		invType := resultInvoiceType[0]
+		serverId := invType["server_id"]
+
+		var baseWhereServerAccount string
+		var baseParamServerAccount []interface{}
+
+		lib.AppendWhere(&baseWhereServerAccount, &baseParamServerAccount, "server_id = ?", serverId)
+
+		runQueryServerAccount := "SELECT account_id, server_id, serveraccount FROM server_account "
+		if len(baseWhereServerAccount) > 0 {
+			runQueryServerAccount += "WHERE " + baseWhereServerAccount
+		}
+
+		resultServerAccount, _, errServerAccount := conn.DBAppConn.SelectQueryByFieldNameSlice(runQueryServerAccount, baseParamServerAccount...)
+		if errServerAccount != nil {
+			return result, errServerAccount
+		}
+
+		var listServerAccountId []string
+		for _, eachServerAccount := range resultServerAccount {
+			listServerAccountId = append(listServerAccountId, eachServerAccount["serveraccount"])
+		}
+
+		lib.UniqueSlice(&listServerAccountId)
+
+		var listRootParentAccount []map[string]string
+		if len(listServerAccountId) > 0 {
+			for _, accountId := range listServerAccountId {
+				rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT ocs.getrootparent(?) as root", accountId)
+				if errQry != nil {
+					return result, errQry
+				}
+
+				single := make(map[string]string)
+				single["account_id"] = accountId
+				single["root_parent_account"] = rootParentAccount
+				listRootParentAccount = append(listRootParentAccount, single)
+			}
+		}
+
+		var listAccountIdBilling []string
+		for _, eachRootParentAccount := range listRootParentAccount {
+		findFromServerAccount:
+			for _, eachServerAccount := range resultServerAccount {
+				if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["serveraccount"] {
+					listAccountIdBilling = append(listAccountIdBilling, eachServerAccount["account_id"])
+					break findFromServerAccount
+				}
+			}
+		}
+
+		var baseWhereAccountBilling string
+		var baseParamAccountBilling []interface{}
+		if len(listAccountIdBilling) > 0 {
+			var baseIn string
+			for _, prid := range listAccountIdBilling {
+				lib.AppendComma(&baseIn, &baseParamAccountBilling, "?", prid)
+			}
+			lib.AppendWhereRaw(&baseWhereAccountBilling, "account_id IN ("+baseIn+")")
+		}
+
+		runQueryAccountBilling := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date FROM account "
+		if len(baseWhereAccountBilling) > 0 {
+			runQueryAccountBilling += "WHERE " + baseWhereAccountBilling
+		}
+		lib.AppendOrderBy(&runQueryAccountBilling, req.Param.OrderBy, req.Param.OrderDir)
+		lib.AppendLimit(&runQueryAccountBilling, req.Param.Page, req.Param.PerPage)
+
+		if len(baseWhereAccountBilling) > 0 {
+			result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQueryAccountBilling, baseParamAccountBilling...)
+		}
+	}
+
+	return result, err
+}
+
+// func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.AccountRequest) ([]map[string]string, error) {
+// 	var result []map[string]string
+// 	var err error
+
+// 	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
+// 	var baseWhere string
+// 	var baseParam []interface{}
+
+// 	lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
+// 	lib.AppendWhere(&baseWhere, &baseParam, "company_id = ?", req.CompanyID)
+// 	lib.AppendWhere(&baseWhere, &baseParam, "name = ?", req.Name)
+// 	if len(req.ListAccountID) > 0 {
+// 		var baseIn string
+// 		for _, prid := range req.ListAccountID {
+// 			lib.AppendComma(&baseIn, &baseParam, "?", prid)
+// 		}
+// 		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
+// 	}
+
+// 	runQuery := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date FROM account "
+// 	if len(baseWhere) > 0 {
+// 		runQuery += "WHERE " + baseWhere
+// 	}
+// 	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+// 	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+
+// 	resultAccountBilling, _, err := conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
+
+// 	var baseWhereServerAccount string
+// 	var baseParamServerAccount []interface{}
+
+// 	lib.AppendWhere(&baseWhereServerAccount, &baseParamServerAccount, "server_id = ?", req.ServerID)
+
+// 	if len(req.ListAccountID) > 0 {
+// 		var baseInServerAccount string
+// 		for _, prid := range req.ListAccountID {
+// 			lib.AppendComma(&baseInServerAccount, &baseParamServerAccount, "?", prid)
+// 		}
+// 		lib.AppendWhereRaw(&baseWhereServerAccount, "account_id IN ("+baseInServerAccount+")")
+// 	}
+
+// 	runQueryServerAccount := "SELECT account_id, server_id, serveraccount FROM server_account "
+// 	if len(baseWhereServerAccount) > 0 {
+// 		runQueryServerAccount += "WHERE " + baseWhereServerAccount
+// 	}
+
+// 	resultServerAccount, _, err := conn.DBAppConn.SelectQueryByFieldNameSlice(runQueryServerAccount, baseParamServerAccount...)
+
+// 	var listServerAccountId []string
+// 	for _, eachServerAccount := range resultServerAccount {
+// 		listServerAccountId = append(listServerAccountId, eachServerAccount["serveraccount"])
+// 	}
+
+// 	lib.UniqueSlice(&listServerAccountId)
+
+// 	var listRootParentAccount []map[string]string
+// 	if len(listServerAccountId) > 0 {
+// 		for _, accountId := range listServerAccountId {
+// 			rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT ocs.getrootparent(?) as root", accountId)
+// 			if errQry != nil {
+// 				return result, errQry
+// 			}
+
+// 			single := make(map[string]string)
+// 			single["account_id"] = accountId
+// 			single["root_parent_account"] = rootParentAccount
+// 			listRootParentAccount = append(listRootParentAccount, single)
+// 		}
+// 	}
+
+// 	for _, eachRootParentAccount := range listRootParentAccount {
+// 		for _, eachServerAccount := range resultServerAccount {
+// 			if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["serveraccount"] {
+// 				for _, acc := range resultAccountBilling {
+// 					if acc["account_id"] == eachServerAccount["account_id"] {
+// 						result = append(result, acc)
+// 					}
+// 				}
+// 				// result = append(result,
+// 			}
+// 		}
+// 	}
+
+// 	return result, err
+// }

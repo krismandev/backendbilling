@@ -4,6 +4,8 @@ import (
 	"billingdashboard/connections"
 	"billingdashboard/modules/account/datastruct"
 	"billingdashboard/modules/account/models"
+
+	"github.com/sirupsen/logrus"
 )
 
 func GetListAccount(conn *connections.Connections, req datastruct.AccountRequest) ([]datastruct.AccountDataStruct, error) {
@@ -115,4 +117,23 @@ func CreateSingleRootParentAccountStruct(rootParentAccount map[string]string) da
 	}
 	single.RootParentAccount = rootParentAccountId
 	return single
+}
+
+func GetListRootAccount(conn *connections.Connections, req datastruct.AccountRequest) ([]datastruct.AccountDataStruct, error) {
+	var output []datastruct.AccountDataStruct
+	var err error
+
+	// grab mapping data from model
+	accountList, err := models.GetRootAccountFromRequest(conn, req)
+	logrus.Info("LihatProcessor-", accountList)
+	if err != nil {
+		return output, err
+	}
+
+	for _, account := range accountList {
+		single := CreateSingleAccountStruct(account)
+		output = append(output, single)
+	}
+
+	return output, err
 }

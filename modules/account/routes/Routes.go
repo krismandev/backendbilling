@@ -14,6 +14,7 @@ import (
 func InitRoutes(conn *connections.Connections) {
 	AccountRoute(conn)
 	RootParentAccountRoute(conn)
+	RootAccountRoute(conn)
 }
 
 // AccountRoute is used for
@@ -60,4 +61,17 @@ func RootParentAccountRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/account/root-parent", rootParentAccountRoute)
+}
+
+func RootAccountRoute(conn *connections.Connections) {
+	rootAccountRoute := mux.NewRouter()
+	rootAccountRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListRootAccountEndpoint(conn),
+		transport.AccountDecodeRequest,
+		transport.AccountListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+
+	http.Handle("/account/root", rootAccountRoute)
 }

@@ -19,9 +19,12 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 	var baseParam []interface{}
 
 	lib.AppendWhere(&baseWhere, &baseParam, "invoice_id = ?", req.InvoiceID)
+	lib.AppendWhere(&baseWhere, &baseParam, "invoice.invoice_no = ?", req.InvoiceNo)
 	lib.AppendWhere(&baseWhere, &baseParam, "invoicestatus = ?", "A")
 	lib.AppendWhere(&baseWhere, &baseParam, "invoice.account_id = ?", req.AccountID)
 	lib.AppendWhere(&baseWhere, &baseParam, "invoice.paid = ?", req.Paid)
+	lib.AppendWhere(&baseWhere, &baseParam, "invoice.invoice_date = ?", req.InvoiceDate)
+	lib.AppendWhere(&baseWhere, &baseParam, "invoice.inv_type_id = ?", req.InvoiceTypeID)
 	if len(req.ListInvoiceID) > 0 {
 		var baseIn string
 		for _, prid := range req.ListInvoiceID {

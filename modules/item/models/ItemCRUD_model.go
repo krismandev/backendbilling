@@ -21,6 +21,8 @@ func GetItemFromRequest(conn *connections.Connections, req datastruct.ItemReques
 	lib.AppendWhere(&baseWhere, &baseParam, "item_id = ?", req.ItemID)
 	lib.AppendWhere(&baseWhere, &baseParam, "item_name = ?", req.ItemName)
 	lib.AppendWhere(&baseWhere, &baseParam, "category = ?", req.Category)
+	lib.AppendWhere(&baseWhere, &baseParam, "operator = ?", req.Operator)
+	lib.AppendWhere(&baseWhere, &baseParam, "route = ?", req.Route)
 	if len(req.ListItemID) > 0 {
 		var baseIn string
 		for _, prid := range req.ListItemID {

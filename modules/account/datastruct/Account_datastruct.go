@@ -21,6 +21,7 @@ type AccountRequest struct {
 	ContactPerson      string              `json:"contact_person"`
 	ContactPersonPhone string              `json:"contact_person_phone"`
 	LastUpdateUsername string              `json:"last_update_username"`
+	InvoiceTypeID      string              `json:"invoice_type_id"`
 	Param              core.DataTableParam `json:"param"`
 }
 

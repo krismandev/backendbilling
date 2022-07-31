@@ -32,6 +32,26 @@ func ListAccountEndpoint(conn *connections.Connections) endpoint.Endpoint {
 	}
 }
 
+// ListAccountEndpoint is as request middleware
+func ListRootAccountEndpoint(conn *connections.Connections) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var errResp core.GlobalListResponse
+		errNoJWT, errJWT := core.HandleJWT(ctx)
+		if errJWT != nil {
+			core.ErrorGlobalListResponse(&errResp, errNoJWT, errJWT.Error(), errJWT)
+			return errResp, nil
+		}
+
+		if req, ok := request.(dt.AccountRequest); ok {
+			return services.ListRootAccount(ctx, req, conn), nil
+		}
+
+		log.Error("Unhandled error occured: request is in unknown format")
+		core.ErrorGlobalListResponse(&errResp, core.ErrOthers, core.DescOthers, errors.New("Request is in unknown format"))
+		return errResp, nil
+	}
+}
+
 // CreateAccountEndpoint is as request middleware
 func CreateAccountEndpoint(conn *connections.Connections) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
