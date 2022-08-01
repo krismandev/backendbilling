@@ -54,7 +54,7 @@ func InsertServerAccount(conn *connections.Connections, req datastruct.ServerAcc
 		qry := "INSERT INTO server_account (account_id, server_id ,serveraccount) VALUES (" + baseIn + ")"
 		_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
 	} else if len(req.ListServerAccount) > 0 {
-		bulkInsertQuery := "INSERT IGNORE INTO server_account (account_id, server_id, serveraccount) VALUES "
+		bulkInsertQuery := "INSERT INTO server_account (account_id, server_id, serveraccount) VALUES "
 		var paramsBulkInsert []interface{}
 		var stringGroup []string
 		for _, each := range req.ListServerAccount {
