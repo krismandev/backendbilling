@@ -58,7 +58,7 @@ func CreateServerAccount(ctx context.Context, req dt.ServerAccountRequest, conn 
 	// process input
 	response.Data, err = processors.InsertServerAccount(conn, req)
 	if err != nil {
-		core.ErrorGlobalSingleResponse(&response, core.ErrServer, core.DescServer, err)
+		core.ErrorGlobalSingleResponse(&response, core.ErrServer, err.Error(), err)
 	}
 
 	return response
