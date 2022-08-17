@@ -207,7 +207,14 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 		var listRootParentAccount []map[string]string
 		if len(listServerAccountId) > 0 {
 			for _, accountId := range listServerAccountId {
-				rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT ocs.getrootparent(?) as root", accountId)
+				accountIdInt, _ := strconv.Atoi(accountId)
+				qryGetRootParent := "SELECT "
+				if accountIdInt > 70000 {
+					qryGetRootParent += " hutch_ocs.getrootparent(?) as root"
+				} else {
+					qryGetRootParent += " ocs.getrootparent(?) as root"
+				}
+				rootParentAccount, errQry := conn.DBAppConn.GetFirstData(qryGetRootParent, accountId)
 				if errQry != nil {
 					return result, errQry
 				}

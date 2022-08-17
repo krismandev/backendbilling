@@ -22,6 +22,7 @@ type ServerDataRequest struct {
 	ExternalRoute             string              `json:"external_route"`
 	ExternalSMSCount          string              `json:"external_smscount"`
 	ExternalTransCount        string              `json:"external_transcount"`
+	ExternalPrice             string              `json:"external_price"`
 	InvoiceID                 string              `json:"invoice_id"`
 	Param                     core.DataTableParam `json:"param"`
 }
@@ -40,6 +41,7 @@ type ServerDataDataStruct struct {
 	ExternalRoute             string `json:"external_route"`
 	ExternalSMSCount          string `json:"external_smscount"`
 	ExternalTransCount        string `json:"external_transcount"`
+	ExternalPrice             string `json:"external_price"`
 	InvoiceID                 string `json:"invoice_id"`
 
 	Item ItemDataStruct `json:"item"`

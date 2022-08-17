@@ -33,6 +33,7 @@ func CreateSingleServerDataStruct(serverData map[string]interface{}) datastruct.
 	single.AccountID, _ = serverData["account_id"].(string)
 	single.ExternalTransdate, _ = serverData["external_transdate"].(string)
 	single.ExternalRootParentAccount, _ = serverData["external_rootparent_account"].(string)
+	single.ExternalPrice, _ = serverData["external_price"].(string)
 	// single.ExternalUserID, _ = serverData["external_user_id"].(string)
 	// single.ExternalSender, _ = serverData["external_sender"].(string)
 	// single.ExternalOperatorCode, _ = serverData["external_operatorcode"].(string)
