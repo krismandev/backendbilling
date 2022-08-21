@@ -109,7 +109,7 @@ func UpdateItem(conn *connections.Connections, req datastruct.ItemRequest) error
 func DeleteItem(conn *connections.Connections, req datastruct.ItemRequest) error {
 	var err error
 	// -- THIS IS DELETE LOGIC EXAMPLE
-	qry := "DELETE FROM item WHERE item_id = ?"
+	qry := "UPDATE item SET status = A WHERE item_id = ?"
 	_, _, err = conn.DBAppConn.Exec(qry, req.ItemID)
 	return err
 }

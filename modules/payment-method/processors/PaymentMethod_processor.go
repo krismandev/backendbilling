@@ -30,6 +30,12 @@ func CreateSinglePaymentMethodStruct(stub map[string]string) datastruct.PaymentM
 	single.PaymentMethodName, _ = stub["payment_method_name"]
 	single.NeedClearingDate, _ = stub["need_clearing_date"]
 	single.NeedCardNumber, _ = stub["need_card_number"]
+	single.BankName, _ = stub["bank_name"]
+	single.Branch, _ = stub["branch"]
+	single.AccountName, _ = stub["account_name"]
+	single.AccountNo, _ = stub["account_no"]
+	single.Code, _ = stub["code"]
+	single.Status, _ = stub["status"]
 
 	return single
 }

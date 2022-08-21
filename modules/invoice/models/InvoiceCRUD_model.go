@@ -34,7 +34,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 	}
 
 	//TERAKHIR NAMBAH QUERY BUAT NAMPILIN ACCOUNT
-	runQuery := "SELECT invoice.invoice_id, invoice.invoice_no, invoice.invoice_date, invoice.invoicestatus, invoice.account_id, invoice.month_use, invoice.inv_type_id, invoice.printcounter, invoice.note, invoice.canceldesc, invoice.last_print_username, invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.last_update_date, invoice.discount_type, invoice.discount, invoice.ppn ,invoice.paid, invoice_type.inv_type_id as tblinvoice_type_inv_type_id, invoice_type.inv_type_name, invoice_type.server_id as tblinvoice_type_server_id, invoice_type.category, invoice_type.load_from_server, account.account_id as tblaccount_account_id, account.name as tblaccount_name, account.address1, account.address2, account.city, account.phone, account.contact_person, account.contact_person_phone FROM invoice JOIN invoice_type ON invoice.inv_type_id = invoice_type.inv_type_id JOIN account ON invoice.account_id = account.account_id "
+	runQuery := "SELECT invoice.invoice_id, invoice.invoice_no, invoice.invoice_date, invoice.invoicestatus, invoice.account_id, invoice.month_use, invoice.inv_type_id, invoice.printcounter, invoice.note, invoice.canceldesc, invoice.payment_method ,invoice.last_print_username, invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.last_update_date, invoice.discount_type, invoice.discount, invoice.ppn ,invoice.paid, invoice_type.inv_type_id as tblinvoice_type_inv_type_id, invoice_type.inv_type_name, invoice_type.server_id as tblinvoice_type_server_id, invoice_type.category, invoice_type.load_from_server, account.account_id as tblaccount_account_id, account.name as tblaccount_name, account.address1, account.address2, account.city, account.phone, account.contact_person, account.contact_person_phone FROM invoice JOIN invoice_type ON invoice.inv_type_id = invoice_type.inv_type_id JOIN account ON invoice.account_id = account.account_id "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -68,6 +68,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 		single["discount_type"] = each["discount_type"]
 		single["discount"] = each["discount"]
 		single["paid"] = each["paid"]
+		single["payment_method"] = each["payment_method"]
 
 		invType := make(map[string]interface{})
 		invType["inv_type_id"] = each["tblinvoice_type_inv_type_id"]
@@ -157,6 +158,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 	createdBy := req.LastUpdateUsername
 	lib.AppendComma(&baseIn, &baseParam, "?", createdBy)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.PPN)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.PaymentMethod)
 
 	// qryCheckControlIdPeriod := "SELECT control_id.key, control_id.period ,last_id FROM control_id WHERE control_id.key = ? AND period = ?"
 	// resCheck, countControlIdPeriod, errCheckControlIdPeriod := conn.DBAppConn.SelectQueryByFieldName(qryCheckControlIdPeriod, "invoice_no", req.MonthUse)
@@ -173,7 +175,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 	// 	}
 	// }
 
-	qry := "INSERT INTO invoice (invoice_id, invoice_date,invoicestatus, account_id, month_use ,inv_type_id, last_update_date, discount_type, discount, invoice.note, created_at,created_by, printcounter,ppn) VALUES (?,?,?,?,?,?,now(),?,?,?,now(),?,0,?)"
+	qry := "INSERT INTO invoice (invoice_id, invoice_date,invoicestatus, account_id, month_use ,inv_type_id, last_update_date, discount_type, discount, invoice.note, created_at,created_by, printcounter,ppn, payment_method) VALUES (?,?,?,?,?,?,now(),?,?,?,now(),?,0,?,?)"
 	_, _, errInsert := conn.DBAppConn.Exec(qry, baseParam...)
 	if errInsert != nil {
 		return errInsert
