@@ -17,7 +17,7 @@ func GetExchangeRateFromRequest(conn *connections.Connections, req datastruct.Ex
 	lib.AppendWhere(&baseWhere, &baseParam, "currency = ?", req.Currency)
 	lib.AppendWhere(&baseWhere, &baseParam, "date = ?", req.Date)
 
-	runQuery := "SELECT date, currency, from_currency, to_currency, convert_value FROM exchange_rate, last_update_username, last_update_date "
+	runQuery := "SELECT date, currency, from_currency, to_currency, convert_value,last_update_username, last_update_date  FROM exchange_rate"
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
