@@ -31,6 +31,8 @@ func CreateSingleExchangeRateStruct(data map[string]string) datastruct.ExchangeR
 	single.FromCurrency, _ = data["from_currency"]
 	single.ToCurrency, _ = data["to_currency"]
 	single.ConvertValue, _ = data["convert_value"]
+	single.LastUpdateUsername, _ = data["last_update_username"]
+	single.LastUpdateDate, _ = data["last_update_date"]
 
 	return single
 }

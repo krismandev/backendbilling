@@ -17,7 +17,7 @@ func GetExchangeRateFromRequest(conn *connections.Connections, req datastruct.Ex
 	lib.AppendWhere(&baseWhere, &baseParam, "currency = ?", req.Currency)
 	lib.AppendWhere(&baseWhere, &baseParam, "date = ?", req.Date)
 
-	runQuery := "SELECT date, currency, from_currency, to_currency, convert_value FROM exchange_rate "
+	runQuery := "SELECT date, currency, from_currency, to_currency, convert_value FROM exchange_rate, last_update_username, last_update_date "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -40,8 +40,9 @@ func InsertExchangeRate(conn *connections.Connections, req datastruct.ExchangeRa
 	lib.AppendComma(&baseIn, &baseParam, "?", req.FromCurrency)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.ToCurrency)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.ConvertValue)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.LastUpdateUsername)
 
-	qry := "INSERT INTO exchange_rate (exchange_rate.date, currency, from_currency, to_currency, convert_value) VALUES (" + baseIn + ")"
+	qry := "INSERT INTO exchange_rate (exchange_rate.date, currency, from_currency, to_currency, convert_value, last_update_username) VALUES (" + baseIn + ")"
 	_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
 
 	return err
