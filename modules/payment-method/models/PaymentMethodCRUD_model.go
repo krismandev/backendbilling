@@ -21,10 +21,10 @@ func GetPaymentMethodFromRequest(conn *connections.Connections, req datastruct.P
 		for _, prid := range req.ListKey {
 			lib.AppendComma(&baseIn, &baseParam, "?", prid)
 		}
-		lib.AppendWhereRaw(&baseWhere, "list_key IN ("+baseIn+")")
+		lib.AppendWhereRaw(&baseWhere, "payment_method.key IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT payment_method.key, payment_method_name, need_clearing_date, need_card_number, bank_name, branch, account_name, account_no, code, status FROM payment_method "
+	runQuery := "SELECT payment_method.key, payment_method_name, need_clearing_date, need_card_number, bank_name, branch, account_name, account_no, code, status, payment_type, currency FROM payment_method "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}

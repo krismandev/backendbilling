@@ -17,6 +17,8 @@ type PaymentMethodRequest struct {
 	AccountNo         string              `json:"account_no"`
 	Code              string              `json:"code"`
 	Status            string              `json:"status"`
+	PayementType      string              `json:"payment_type"`
+	Currency          string              `json:"currency"`
 	Param             core.DataTableParam `json:"param"`
 }
 
@@ -31,4 +33,6 @@ type PaymentMethodDataStruct struct {
 	AccountNo         string `json:"account_no"`
 	Code              string `json:"code"`
 	Status            string `json:"status"`
+	PayementType      string `json:"payment_type"`
+	Currency          string `json:"currency"`
 }
