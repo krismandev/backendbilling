@@ -42,7 +42,7 @@ func CreateExchangeRate(ctx context.Context, req dt.ExchangeRateRequest, conn *c
 	var err error
 
 	// validate input
-	if len(req.Date) == 0 || len(req.Currency) == 0 || len(req.FromCurrency) == 0 || len(req.ToCurrency) == 0 || len(req.ConvertValue) == 0 {
+	if len(req.Date) == 0 || len(req.FromCurrency) == 0 || len(req.ToCurrency) == 0 || len(req.ConvertValue) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}
@@ -70,7 +70,7 @@ func UpdateExchangeRate(ctx context.Context, req dt.ExchangeRateRequest, conn *c
 	var err error
 
 	// validate input
-	if len(req.Date) == 0 || len(req.Currency) == 0 {
+	if len(req.Date) == 0 || len(req.FromCurrency) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}
@@ -105,7 +105,7 @@ func DeleteExchangeRate(ctx context.Context, req dt.ExchangeRateRequest, conn *c
 	var err error
 
 	// validate input
-	if len(req.Date) == 0 || len(req.Currency) == 0 {
+	if len(req.Date) == 0 || len(req.FromCurrency) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}

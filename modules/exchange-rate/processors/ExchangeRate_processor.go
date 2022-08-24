@@ -27,7 +27,6 @@ func GetListExchangeRate(conn *connections.Connections, req datastruct.ExchangeR
 func CreateSingleExchangeRateStruct(data map[string]string) datastruct.ExchangeRateDataStruct {
 	var single datastruct.ExchangeRateDataStruct
 	single.Date, _ = data["date"]
-	single.Currency, _ = data["currency"]
 	single.FromCurrency, _ = data["from_currency"]
 	single.ToCurrency, _ = data["to_currency"]
 	single.ConvertValue, _ = data["convert_value"]
