@@ -42,6 +42,7 @@ func CreateSingleAccountStruct(account map[string]string) datastruct.AccountData
 	single.ContactPersonPhone = account["contact_person_phone"]
 	single.Phone = account["phone"]
 	single.City = account["city"]
+	single.NonTaxable = account["non_taxable"]
 	return single
 }
 

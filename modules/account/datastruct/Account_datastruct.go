@@ -22,6 +22,7 @@ type AccountRequest struct {
 	ContactPersonPhone string              `json:"contact_person_phone"`
 	LastUpdateUsername string              `json:"last_update_username"`
 	InvoiceTypeID      string              `json:"invoice_type_id"`
+	NonTaxable         string              `json:"non_taxable"`
 	Param              core.DataTableParam `json:"param"`
 }
 
@@ -40,6 +41,7 @@ type AccountDataStruct struct {
 	ContactPerson      string `json:"contact_person"`
 	ContactPersonPhone string `json:"contact_person_phone"`
 	LastUpdateUsername string `json:"last_update_username"`
+	NonTaxable         string `json:"non_taxable"`
 }
 
 type RootParentAccountRequest struct {

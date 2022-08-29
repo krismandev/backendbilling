@@ -32,7 +32,7 @@ func GetAccountFromRequest(conn *connections.Connections, req datastruct.Account
 		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date FROM account "
+	runQuery := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date, non_taxable FROM account "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
