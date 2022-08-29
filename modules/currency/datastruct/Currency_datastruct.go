@@ -22,3 +22,22 @@ type CurrencyDataStruct struct {
 	LastUpdateUsername string `json:"last_update_username"`
 	LastUpdateDate     string `json:"last_update_date"`
 }
+
+type BalanceRequest struct {
+	BalanceType        string              `json:"balance_type"`
+	BalanceName        string              `json:"balance_name"`
+	Exponent           string              `json:"exponent"`
+	BalanceCategory    string              `json:"balance_category"`
+	LastUpdateUsername string              `json:"last_update_username"`
+	LastUpdateDate     string              `json:"last_update_date"`
+	Param              core.DataTableParam `json:"param"`
+}
+
+type BalanceDataStruct struct {
+	BalanceType        string `json:"balance_type"`
+	BalanceName        string `json:"balance_name"`
+	Exponent           string `json:"exponent"`
+	BalanceCategory    string `json:"balance_category"`
+	LastUpdateUsername string `json:"last_update_username"`
+	LastUpdateDate     string `json:"last_update_date"`
+}

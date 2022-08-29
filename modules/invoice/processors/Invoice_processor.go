@@ -48,6 +48,8 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 	single.Paid, _ = invoice["paid"].(string)
 	single.PaymentMethod, _ = invoice["payment_method"].(string)
 	single.ExchangeRateDate, _ = invoice["exchange_rate_date"].(string)
+	single.DueDate, _ = invoice["due_date"].(string)
+	single.GrandTotal, _ = invoice["grand_total"].(string)
 
 	var invoiceType datastruct.InvoiceTypeDataStruct
 	invoiceType.InvoiceTypeID = invoice["invoice_type"].(map[string]interface{})["inv_type_id"].(string)
@@ -79,6 +81,7 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 		detail.Qty = eachDetail["qty"].(string)
 		detail.Uom = eachDetail["uom"].(string)
 		detail.Note = eachDetail["note"].(string)
+		detail.BalanceType = eachDetail["balance_type"].(string)
 
 		var item datastruct.ItemDataStruct
 		item.ItemID = eachDetail["item"].(map[string]interface{})["item_id"].(string)

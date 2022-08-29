@@ -40,6 +40,7 @@ func CreateSingleServerDataStruct(serverData map[string]interface{}) datastruct.
 	// single.ExternalRoute, _ = serverData["external_route"].(string)
 	single.ExternalSMSCount, _ = serverData["external_smscount"].(string)
 	single.ExternalTransCount, _ = serverData["external_transcount"].(string)
+	single.ExternalBalanceType, _ = serverData["external_balance_type"].(string)
 	single.InvoiceID, _ = serverData["invoice_id"].(string)
 
 	itemPrice := datastruct.ItemPriceDataStruct{

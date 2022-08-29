@@ -13,6 +13,7 @@ import (
 
 func InitRoutes(conn *connections.Connections) {
 	CurrencyRoute(conn)
+	BalanceRoute(conn)
 }
 
 // CurrencyRoute is used for
@@ -47,4 +48,17 @@ func CurrencyRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/currency", currencyRoute)
+}
+
+func BalanceRoute(conn *connections.Connections) {
+	BalanceRoute := mux.NewRouter()
+	BalanceRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListBalanceEndpoint(conn),
+		transport.BalanceDecodeRequest,
+		transport.BalanceListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+
+	http.Handle("/balance", BalanceRoute)
 }

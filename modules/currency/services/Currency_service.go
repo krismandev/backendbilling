@@ -120,3 +120,26 @@ func DeleteCurrency(ctx context.Context, req dt.CurrencyRequest, conn *connectio
 
 	return response
 }
+
+// ListBalance is use for
+func ListBalance(ctx context.Context, req dt.BalanceRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("BalanceService.ListBalance Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	listBalance, err := processors.GetListBalance(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listBalance {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}

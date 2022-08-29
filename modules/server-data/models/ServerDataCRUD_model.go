@@ -32,8 +32,29 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		lib.AppendWhereRaw(&baseWhere, "server_data_id IN ("+baseIn+")")
 	}
 
+	resultCurrencey, _, errGetCurrency := conn.DBOcsConn.SelectQueryByFieldNameSlice("SELECT balance_type, balance_name, exponent, balance_category FROM ocs.balance WHERE balance_category = ?", "C")
+	if errGetCurrency != nil {
+		return result, errGetCurrency
+	}
+	// log.Info("LihatResultCurrency-", resultCurrencey)
+
+	currencyIn := ""
+	for i, each := range resultCurrencey {
+		currencyIn = currencyIn + "'" + each["balance_type"] + "'"
+		if i != len(resultCurrencey)-1 {
+			currencyIn = currencyIn + ", "
+		}
+	}
+
+	log.Info("LihatCurrency-", currencyIn)
 	// runQuery := "SELECT server_data_id, server_id, server_account, item_id, account_id, external_smscount,external_transdate, external_transcount, invoice_id FROM server_data "
-	runQuery := "SELECT server_data.server_data_id, server_data.server_id, server_data.external_account_id, server_data.external_rootparent_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, server_data.external_transcount, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_price <> 1), server_data.external_price, item_price.price) as price, item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  FROM server_data JOIN item ON server_data.item_id=item.item_id JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id AND server_data.account_id=item_price.account_id"
+	runQuery := `SELECT server_data.server_data_id, server_data.server_id, server_data.external_account_id, 
+	server_data.external_rootparent_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, 
+	server_data.external_transcount, server_data.external_balance_type, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, 
+	IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_balance_type in (` + currencyIn + `) ),server_data.external_price, item_price.price) as price, 
+	item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  
+	FROM server_data JOIN item ON server_data.item_id=item.item_id JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
+	AND server_data.account_id=item_price.account_id`
 	if len(baseWhere) > 0 {
 		runQuery += " WHERE " + baseWhere
 	}
@@ -54,6 +75,7 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		single["account_id"] = each["account_id"]
 		single["external_transdate"] = each["external_transdate"]
 		single["external_price"] = each["price"]
+		single["external_balance_type"] = each["external_balance_type"]
 		// single["external_user_id"] = each["external_user_id"]
 		// single["external_sender"] = each["external_sender"]
 		// single["external_operatorcode"] = each["external_operatorcode"]

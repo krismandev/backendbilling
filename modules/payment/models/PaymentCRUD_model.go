@@ -41,8 +41,6 @@ func GetPaymentFromRequest(conn *connections.Connections, req datastruct.Payment
 		runQuery += "WHERE " + baseWhere
 	}
 
-	logrus.Info("LihatQuery-", runQuery)
-
 	lib.AppendOrderBy(&runQuery, "payment.created_at", "desc")
 	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
@@ -120,9 +118,6 @@ func InsertPayment(conn *connections.Connections, req datastruct.PaymentRequest)
 	subTotalFloat, err := strconv.ParseFloat(subTotal, 64)
 	sudahDibayarFloat, err := strconv.ParseFloat(sudahDibayar, 64)
 
-	logrus.Info("LihatSubTotalFloat", subTotalFloat)
-	logrus.Info("LihatSudahDibayarFloat", sudahDibayarFloat)
-
 	// qryGetSudahDibayar := "SELECT SUM(total)"
 	qryGetInvoiceData := "SELECT discount, discount_type, ppn FROM invoice WHERE invoice.invoice_id = ?"
 	resInvoice, _, errGetInvoiceData := conn.DBAppConn.SelectQueryByFieldNameSlice(qryGetInvoiceData, req.InvoiceID)
@@ -130,7 +125,6 @@ func InsertPayment(conn *connections.Connections, req datastruct.PaymentRequest)
 		return errGetInvoiceData
 	}
 
-	logrus.Info("LihatInvoice", resInvoice)
 	oldInvoice := resInvoice[0]
 	discountType := oldInvoice["discount_type"]
 	discount, _ := strconv.ParseFloat(oldInvoice["discount"], 64)
@@ -171,9 +165,6 @@ func CheckPaymentNominal(conn *connections.Connections, req datastruct.PaymentRe
 	subTotalFloat, err := strconv.ParseFloat(subTotal, 64)
 	sudahDibayarFloat, err := strconv.ParseFloat(sudahDibayar, 64)
 
-	logrus.Info("LihatSubTotalFloat", subTotalFloat)
-	logrus.Info("LihatSudahDibayarFloat", sudahDibayarFloat)
-
 	// qryGetSudahDibayar := "SELECT SUM(total)"
 	qryGetInvoiceData := "SELECT discount, discount_type, ppn FROM invoice WHERE invoice.invoice_id = ?"
 	resInvoice, _, errGetInvoiceData := conn.DBAppConn.SelectQueryByFieldNameSlice(qryGetInvoiceData, req.InvoiceID)
@@ -181,7 +172,6 @@ func CheckPaymentNominal(conn *connections.Connections, req datastruct.PaymentRe
 		return errGetInvoiceData
 	}
 
-	logrus.Info("LihatInvoice", resInvoice)
 	oldInvoice := resInvoice[0]
 	discountType := oldInvoice["discount_type"]
 	discount, _ := strconv.ParseFloat(oldInvoice["discount"], 64)
@@ -193,9 +183,8 @@ func CheckPaymentNominal(conn *connections.Connections, req datastruct.PaymentRe
 
 	}
 
-	logrus.Info("Calculate Discount- ", discount)
 	newSubTotal := subTotalFloat - discount
-	logrus.Info("NewSubTotal-", newSubTotal)
+
 	ppn = math.Ceil((ppn*newSubTotal/100)*100) / 100
 
 	grandTotal := math.Ceil((newSubTotal+ppn)*100) / 100

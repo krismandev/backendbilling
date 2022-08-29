@@ -72,3 +72,25 @@ func DeleteCurrency(conn *connections.Connections, req datastruct.CurrencyReques
 	// _, _, err = conn.DBAppConn.Exec(qry, req.CurrencyID)
 	return err
 }
+
+func GetBalanceFromRequest(conn *connections.Connections, req datastruct.BalanceRequest) ([]map[string]string, error) {
+	var result []map[string]string
+	var err error
+
+	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
+	var baseWhere string
+	var baseParam []interface{}
+
+	lib.AppendWhere(&baseWhere, &baseParam, "balance_type = ?", req.BalanceType)
+	lib.AppendWhere(&baseWhere, &baseParam, "balance_name = ?", req.BalanceName)
+
+	runQuery := "SELECT balance_type, balance_name, exponent, balance_category ,last_update_username, last_update_date FROM balance "
+	if len(baseWhere) > 0 {
+		runQuery += "WHERE " + baseWhere
+	}
+	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+
+	result, _, err = conn.DBOcsConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
+	return result, err
+}
