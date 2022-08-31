@@ -19,6 +19,8 @@ func GetCompanyFromRequest(conn *connections.Connections, req datastruct.Company
 
 	lib.AppendWhere(&baseWhere, &baseParam, "companyid = ?", req.CompanyID)
 	lib.AppendWhere(&baseWhere, &baseParam, "companyid = ?", req.Name)
+	lib.AppendWhere(&baseWhere, &baseParam, "status = ?", req.Status)
+	lib.AppendWhere(&baseWhere, &baseParam, "city = ?", req.City)
 	if len(req.ListCompanyID) > 0 {
 		var baseIn string
 		for _, prid := range req.ListCompanyID {

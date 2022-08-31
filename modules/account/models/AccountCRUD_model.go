@@ -73,8 +73,9 @@ func InsertAccount(conn *connections.Connections, req datastruct.AccountRequest)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.ContactPersonPhone)
 
 	lib.AppendComma(&baseIn, &baseParam, "?", req.LastUpdateUsername)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.NonTaxable)
 
-	qry := "INSERT INTO account (account_id,  name, status, company_id, account_type, billing_type, account.desc, address1,address2,city,phone,contact_person,contact_person_phone, last_update_username) VALUES (" + baseIn + ")"
+	qry := "INSERT INTO account (account_id,  name, status, company_id, account_type, billing_type, account.desc, address1,address2,city,phone,contact_person,contact_person_phone, last_update_username,non_taxable) VALUES (" + baseIn + ")"
 	_, err = conn.DBAppConn.InsertGetLastID(qry, baseParam...)
 
 	log.Info("InsertParam - ", baseParam)
@@ -102,6 +103,7 @@ func UpdateAccount(conn *connections.Connections, req datastruct.AccountRequest)
 	lib.AppendComma(&baseUp, &baseParam, "contact_person = ?", req.ContactPerson)
 	lib.AppendComma(&baseUp, &baseParam, "contact_person_phone = ?", req.ContactPersonPhone)
 	lib.AppendComma(&baseUp, &baseParam, "last_update_username = ?", req.LastUpdateUsername)
+	lib.AppendComma(&baseUp, &baseParam, "non_taxable = ?", req.NonTaxable)
 
 	qry := "UPDATE account SET " + baseUp + " WHERE account_id = ?"
 	baseParam = append(baseParam, req.AccountID)
