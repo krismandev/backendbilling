@@ -31,6 +31,7 @@ func CreateSingleInvoiceTypeStruct(invoiceType map[string]string) datastruct.Inv
 	single.ServerID, _ = invoiceType["server_id"]
 	single.Category, _ = invoiceType["category"]
 	single.LoadFromServer, _ = invoiceType["load_from_server"]
+	single.CurrencyCode, _ = invoiceType["currency_code"]
 	single.LastUpdateUsername, _ = invoiceType["last_update_username"]
 	single.LastUpdateDate, _ = invoiceType["last_update_date"]
 

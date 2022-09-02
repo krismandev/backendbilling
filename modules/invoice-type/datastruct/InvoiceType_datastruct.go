@@ -14,6 +14,7 @@ type InvoiceTypeRequest struct {
 	LoadFromServer     string              `json:"load_from_server"`
 	LastUpdateUsername string              `json:"last_update_username"`
 	LastUpdateDate     string              `json:"last_update_date"`
+	CurrencyCode       string              `json:"currency_code"`
 	Param              core.DataTableParam `json:"param"`
 }
 
@@ -25,4 +26,5 @@ type InvoiceTypeDataStruct struct {
 	LoadFromServer     string `json:"load_from_server"`
 	LastUpdateUsername string `json:"last_update_username"`
 	LastUpdateDate     string `json:"last_update_date"`
+	CurrencyCode       string `json:"currency_code"`
 }

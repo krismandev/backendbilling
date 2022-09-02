@@ -28,7 +28,7 @@ func CreateSingleServerAccountStruct(ServerAccount map[string]string) datastruct
 	var single datastruct.ServerAccountDataStruct
 	single.AccountID, _ = ServerAccount["account_id"]
 	single.ServerID, _ = ServerAccount["server_id"]
-	single.ServerAccount, _ = ServerAccount["serveraccount"]
+	single.ExternalAccountID, _ = ServerAccount["external_account_id"]
 
 	return single
 }

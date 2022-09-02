@@ -7,9 +7,9 @@ else
 fi
 builddate="$(date '+%Y-%m-%d_%H:%M:%S')"
 echo $builddate
-docker build -t backendbillingdashboard:$ver --build-arg VER=$ver --build-arg BUILDDATE=$builddate .
-docker tag backendbillingdashboard:$ver mygit.imitra.com:5020/backendbillingdashboard:$ver
-docker tag backendbillingdashboard:$ver mygit.imitra.com:5020/backendbillingdashboard:devlatest
-docker push mygit.imitra.com:5020/backendbillingdashboard:$ver
-docker push mygit.imitra.com:5020/backendbillingdashboard:devlatest
+docker build -t billingdashboard:$ver --build-arg VER=$ver --build-arg BUILDDATE=$builddate .
+docker tag billingdashboard:$ver mygit.imitra.com:5020/billingdashboard:$ver
+docker tag billingdashboard:$ver mygit.imitra.com:5020/billingdashboard:devlatest
+docker push mygit.imitra.com:5020/billingdashboard:$ver
+docker push mygit.imitra.com:5020/billingdashboard:devlatest
 docker image prune --filter label=stage=builder --force

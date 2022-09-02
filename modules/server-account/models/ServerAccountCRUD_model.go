@@ -19,7 +19,7 @@ func GetServerAccountFromRequest(conn *connections.Connections, req datastruct.S
 
 	lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_id = ?", req.ServerID)
-	lib.AppendWhere(&baseWhere, &baseParam, "serveraccount = ?", req.ServerAccount)
+	lib.AppendWhere(&baseWhere, &baseParam, "external_account_id = ?", req.ExternalAccountID)
 	if len(req.ListAccountID) > 0 {
 		var baseIn string
 		for _, accId := range req.ListAccountID {
@@ -28,7 +28,7 @@ func GetServerAccountFromRequest(conn *connections.Connections, req datastruct.S
 		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT server_id, account_id ,serveraccount, last_update_username, last_update_date FROM server_account "
+	runQuery := "SELECT server_id, account_id ,external_account_id, last_update_username, last_update_date FROM server_account "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -49,19 +49,19 @@ func InsertServerAccount(conn *connections.Connections, req datastruct.ServerAcc
 	if len(req.ListServerAccount) == 0 {
 		lib.AppendComma(&baseIn, &baseParam, "?", req.AccountID)
 		lib.AppendComma(&baseIn, &baseParam, "?", req.ServerID)
-		lib.AppendComma(&baseIn, &baseParam, "?", req.ServerAccount)
+		lib.AppendComma(&baseIn, &baseParam, "?", req.ExternalAccountID)
 
-		qry := "INSERT INTO server_account (account_id, server_id ,serveraccount) VALUES (" + baseIn + ")"
+		qry := "INSERT INTO server_account (account_id, server_id ,external_account_id) VALUES (" + baseIn + ")"
 		_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
 	} else if len(req.ListServerAccount) > 0 {
-		bulkInsertQuery := "INSERT INTO server_account (account_id, server_id, serveraccount) VALUES "
+		bulkInsertQuery := "INSERT INTO server_account (account_id, server_id, external_account_id) VALUES "
 		var paramsBulkInsert []interface{}
 		var stringGroup []string
 		for _, each := range req.ListServerAccount {
 			partquery := "(?, ?, ?)"
 			paramsBulkInsert = append(paramsBulkInsert, each.AccountID)
 			paramsBulkInsert = append(paramsBulkInsert, each.ServerID)
-			paramsBulkInsert = append(paramsBulkInsert, each.ServerAccount)
+			paramsBulkInsert = append(paramsBulkInsert, each.ExternalAccountID)
 			stringGroup = append(stringGroup, partquery)
 		}
 

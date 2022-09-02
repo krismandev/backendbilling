@@ -107,7 +107,7 @@ func GetServerAccountFromRequest(conn *connections.Connections, req datastruct.S
 		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT server_id, account_id ,serveraccount, last_update_username, last_update_date FROM server_account "
+	runQuery := "SELECT server_id, account_id ,external_account_id, last_update_username, last_update_date FROM server_account "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}

@@ -16,6 +16,7 @@ func GetPaymentMethodFromRequest(conn *connections.Connections, req datastruct.P
 
 	lib.AppendWhere(&baseWhere, &baseParam, "payment_method.key = ?", req.Key)
 	lib.AppendWhere(&baseWhere, &baseParam, "payment_method_name = ?", req.PaymentMethodName)
+	lib.AppendWhere(&baseWhere, &baseParam, "currency_code = ?", req.CurrencyCode)
 	if len(req.ListKey) > 0 {
 		var baseIn string
 		for _, prid := range req.ListKey {
@@ -24,7 +25,7 @@ func GetPaymentMethodFromRequest(conn *connections.Connections, req datastruct.P
 		lib.AppendWhereRaw(&baseWhere, "payment_method.key IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT payment_method.key, payment_method_name, need_clearing_date, need_card_number, bank_name, branch, account_name, account_no, code, status, payment_type, currency FROM payment_method "
+	runQuery := "SELECT payment_method.key, payment_method_name, need_clearing_date, need_card_number, bank_name, branch, account_name, account_no, code, status, payment_type, currency_code FROM payment_method "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -51,8 +52,11 @@ func InsertPaymentMethod(conn *connections.Connections, req datastruct.PaymentMe
 	lib.AppendComma(&baseIn, &baseParam, "?", req.AccountName)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.AccountNo)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.Code)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.CurrencyCode)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.LastUpdateUsername)
+	lib.AppendCommaRaw(&baseIn, "now()")
 
-	qry := "INSERT INTO payment_method (payment_method.key, payment_method_name, need_clearing_date, need_card_number,bank_name,branch, account_name,account_no, code) VALUES (" + baseIn + ")"
+	qry := "INSERT INTO payment_method (payment_method.key, payment_method_name, need_clearing_date, need_card_number,bank_name,branch, account_name,account_no, code, currency_code, last_update_username, last_update_date) VALUES (" + baseIn + ")"
 	_, _, err = conn.DBAppConn.Exec(qry, baseParam...)
 
 	return err
@@ -73,6 +77,8 @@ func UpdatePaymentMethod(conn *connections.Connections, req datastruct.PaymentMe
 	lib.AppendComma(&baseUp, &baseParam, "account_name = ?", req.AccountName)
 	lib.AppendComma(&baseUp, &baseParam, "account_no = ?", req.AccountNo)
 	lib.AppendComma(&baseUp, &baseParam, "code = ?", req.Code)
+	lib.AppendComma(&baseUp, &baseParam, "currency_code = ?", req.CurrencyCode)
+	lib.AppendComma(&baseUp, &baseParam, "last_update_username = ?", req.LastUpdateUsername)
 	qry := "UPDATE payment_method SET " + baseUp + " WHERE payment_method.key = ?"
 	baseParam = append(baseParam, req.Key)
 	_, _, err = conn.DBAppConn.Exec(qry, baseParam...)

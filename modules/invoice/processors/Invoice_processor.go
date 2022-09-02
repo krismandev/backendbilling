@@ -57,6 +57,7 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 	invoiceType.ServerID = invoice["invoice_type"].(map[string]interface{})["server_id"].(string)
 	invoiceType.Category = invoice["invoice_type"].(map[string]interface{})["category"].(string)
 	invoiceType.LoadFromServer = invoice["invoice_type"].(map[string]interface{})["load_from_server"].(string)
+	invoiceType.CurrencyCode = invoice["invoice_type"].(map[string]interface{})["currency_code"].(string)
 
 	single.InvoiceType = invoiceType
 

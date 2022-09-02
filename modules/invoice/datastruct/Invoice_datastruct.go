@@ -32,6 +32,7 @@ type InvoiceRequest struct {
 	DueDate                    string   `json:"due_date"`
 	ApproachingDueDateInterval string   `json:"approaching_due_date_interval"`
 	GrandTotal                 string   `json:"grand_total"`
+	PPNAmount                  string   `json:"ppn_amount"`
 
 	ServerID          string                `json:"server_id"`
 	ListInvoiceDetail []InvoiceDetailStruct `json:"list_invoice_detail"`
@@ -64,6 +65,7 @@ type InvoiceDataStruct struct {
 	ExchangeRateDate   string `json:"exchange_rate_date"`
 	DueDate            string `json:"due_date"`
 	GrandTotal         string `json:"grand_total"`
+	PPNAmount          string `json:"ppn_amount"`
 
 	InvoiceType InvoiceTypeDataStruct `json:"invoice_type"`
 	Account     AccountDataStruct     `json:"account"`
@@ -101,6 +103,7 @@ type InvoiceTypeDataStruct struct {
 	LoadFromServer     string `json:"load_from_server"`
 	LastUpdateUsername string `json:"last_update_username"`
 	LastUpdateDate     string `json:"last_update_date"`
+	CurrencyCode       string `json:"currency_code"`
 }
 
 type AccountDataStruct struct {

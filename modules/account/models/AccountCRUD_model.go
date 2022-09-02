@@ -189,7 +189,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 
 		lib.AppendWhere(&baseWhereServerAccount, &baseParamServerAccount, "server_id = ?", serverId)
 
-		runQueryServerAccount := "SELECT account_id, server_id, serveraccount FROM server_account "
+		runQueryServerAccount := "SELECT account_id, server_id, external_account_id FROM server_account "
 		if len(baseWhereServerAccount) > 0 {
 			runQueryServerAccount += "WHERE " + baseWhereServerAccount
 		}
@@ -201,7 +201,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 
 		var listServerAccountId []string
 		for _, eachServerAccount := range resultServerAccount {
-			listServerAccountId = append(listServerAccountId, eachServerAccount["serveraccount"])
+			listServerAccountId = append(listServerAccountId, eachServerAccount["external_account_id"])
 		}
 
 		lib.UniqueSlice(&listServerAccountId)
@@ -232,7 +232,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 		for _, eachRootParentAccount := range listRootParentAccount {
 		findFromServerAccount:
 			for _, eachServerAccount := range resultServerAccount {
-				if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["serveraccount"] {
+				if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["external_account_id"] {
 					listAccountIdBilling = append(listAccountIdBilling, eachServerAccount["account_id"])
 					break findFromServerAccount
 				}
@@ -305,7 +305,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 // 		lib.AppendWhereRaw(&baseWhereServerAccount, "account_id IN ("+baseInServerAccount+")")
 // 	}
 
-// 	runQueryServerAccount := "SELECT account_id, server_id, serveraccount FROM server_account "
+// 	runQueryServerAccount := "SELECT account_id, server_id, external_account_id FROM server_account "
 // 	if len(baseWhereServerAccount) > 0 {
 // 		runQueryServerAccount += "WHERE " + baseWhereServerAccount
 // 	}
@@ -314,7 +314,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 
 // 	var listServerAccountId []string
 // 	for _, eachServerAccount := range resultServerAccount {
-// 		listServerAccountId = append(listServerAccountId, eachServerAccount["serveraccount"])
+// 		listServerAccountId = append(listServerAccountId, eachServerAccount["external_account_id"])
 // 	}
 
 // 	lib.UniqueSlice(&listServerAccountId)
@@ -336,7 +336,7 @@ func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.Acc
 
 // 	for _, eachRootParentAccount := range listRootParentAccount {
 // 		for _, eachServerAccount := range resultServerAccount {
-// 			if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["serveraccount"] {
+// 			if eachRootParentAccount["root_parent_account"] == "NULL" && eachRootParentAccount["account_id"] == eachServerAccount["external_account_id"] {
 // 				for _, acc := range resultAccountBilling {
 // 					if acc["account_id"] == eachServerAccount["account_id"] {
 // 						result = append(result, acc)

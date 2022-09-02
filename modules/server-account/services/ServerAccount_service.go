@@ -71,7 +71,7 @@ func UpdateServerAccount(ctx context.Context, req dt.ServerAccountRequest, conn 
 	var err error
 
 	// validate input
-	if len(req.AccountID) == 0 || len(req.ServerID) == 0 || len(req.ServerAccount) == 0 {
+	if len(req.AccountID) == 0 || len(req.ServerID) == 0 || len(req.ExternalAccountID) == 0 {
 		core.ErrorGlobalSingleResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}

@@ -26,7 +26,7 @@ func GetInvoiceTypeFromRequest(conn *connections.Connections, req datastruct.Inv
 		lib.AppendWhereRaw(&baseWhere, "inv_type_id IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT inv_type_id, inv_type_name, server_id, category, load_from_server, last_update_username, last_update_date FROM invoice_type "
+	runQuery := "SELECT inv_type_id, inv_type_name, server_id, category, load_from_server, last_update_username, last_update_date, currency_code FROM invoice_type "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}

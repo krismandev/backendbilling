@@ -37,7 +37,7 @@ func CreateSinglePaymentMethodStruct(stub map[string]string) datastruct.PaymentM
 	single.Code, _ = stub["code"]
 	single.Status, _ = stub["status"]
 	single.PayementType, _ = stub["payment_type"]
-	single.Currency, _ = stub["currency"]
+	single.CurrencyCode, _ = stub["currency_code"]
 
 	return single
 }

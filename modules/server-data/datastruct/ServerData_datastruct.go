@@ -25,6 +25,7 @@ type ServerDataRequest struct {
 	ExternalPrice             string              `json:"external_price"`
 	ExternalBalanceType       string              `json:"external_balance_type"`
 	InvoiceID                 string              `json:"invoice_id"`
+	CurrencyCode              string              `json:"currency_code"`
 	Param                     core.DataTableParam `json:"param"`
 }
 

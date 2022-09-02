@@ -23,6 +23,7 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.external_rootparent_account = ?", req.ExternalRootParentAccount)
 	lib.AppendWhere(&baseWhere, &baseParam, "DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?", req.MonthUse)
 	lib.AppendWhereRaw(&baseWhere, "server_data.invoice_id IS NULL")
+	lib.AppendWhere(&baseWhere, &baseParam, "item_price.currency_code = ?", req.CurrencyCode)
 
 	if len(req.ListServerDataID) > 0 {
 		var baseIn string

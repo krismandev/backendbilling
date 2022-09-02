@@ -84,7 +84,7 @@ func CreateSingleServerAccountStruct(server map[string]string) datastruct.Server
 	var single datastruct.ServerAccountDataStruct
 	single.ServerID, _ = server["server_id"]
 	single.AccountID, _ = server["account_id"]
-	single.ServerAccount, _ = server["serveraccount"]
+	single.ExternalAccountID, _ = server["external_account_id"]
 	single.LastUpdateUsername, _ = server["last_update_username"]
 	single.LastUpdateDate, _ = server["last_update_date"]
 
