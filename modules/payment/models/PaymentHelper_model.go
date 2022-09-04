@@ -68,3 +68,9 @@ func CheckIsItPaid(invoiceID string, conn *connections.Connections, req datastru
 	// qryGetInvoice := "SELECT"
 	return nil
 }
+
+func UpdateControlId(conn *connections.Connections, newId string, key string) error {
+	var err error
+	_, _, err = conn.DBAppConn.Exec("UPDATE control_id set last_id = ? WHERE control_id.key=?", newId, key)
+	return err
+}

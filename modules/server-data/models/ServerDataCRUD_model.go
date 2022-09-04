@@ -17,13 +17,14 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	var baseWhere string
 	var baseParam []interface{}
 
+	baseParam = append(baseParam, req.CurrencyCode)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data_id = ?", req.ServerDataID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.server_id = ?", req.ServerID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.account_id = ?", req.AccountID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.external_rootparent_account = ?", req.ExternalRootParentAccount)
 	lib.AppendWhere(&baseWhere, &baseParam, "DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?", req.MonthUse)
 	lib.AppendWhereRaw(&baseWhere, "server_data.invoice_id IS NULL")
-	lib.AppendWhere(&baseWhere, &baseParam, "item_price.currency_code = ?", req.CurrencyCode)
+	// lib.AppendWhere(&baseWhere, &baseParam, "item_price.currency_code = ?", req.CurrencyCode)
 
 	if len(req.ListServerDataID) > 0 {
 		var baseIn string
@@ -54,8 +55,8 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	server_data.external_transcount, server_data.external_balance_type, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, 
 	IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_balance_type in (` + currencyIn + `) ),server_data.external_price, item_price.price) as price, 
 	item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  
-	FROM server_data JOIN item ON server_data.item_id=item.item_id JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
-	AND server_data.account_id=item_price.account_id`
+	FROM server_data LEFT JOIN item ON server_data.item_id=item.item_id LEFT JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
+	AND server_data.account_id=item_price.account_id AND item_price.currency_code = ?`
 	if len(baseWhere) > 0 {
 		runQuery += " WHERE " + baseWhere
 	}
