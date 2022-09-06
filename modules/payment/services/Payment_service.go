@@ -125,3 +125,26 @@ func DeletePayment(ctx context.Context, req dt.PaymentRequest, conn *connections
 
 	return response
 }
+
+// ListPaymentDeductionType is use for
+func ListPaymentDeductionType(ctx context.Context, req dt.PaymentDeductionTypeRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("PaymentService.ListPaymentDeductionType Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	listPaymentDeductionType, err := processors.GetListPaymentDeductionType(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listPaymentDeductionType {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}

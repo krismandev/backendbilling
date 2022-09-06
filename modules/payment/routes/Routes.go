@@ -13,6 +13,7 @@ import (
 
 func InitRoutes(conn *connections.Connections) {
 	PaymentRoute(conn)
+	PaymentDeductionTypeRoute(conn)
 }
 
 // PaymentRoute is used for
@@ -47,4 +48,16 @@ func PaymentRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/payment", paymentRoute)
+}
+
+func PaymentDeductionTypeRoute(conn *connections.Connections) {
+	paymentDeductionTypeRoute := mux.NewRouter()
+	paymentDeductionTypeRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListPaymentDeductionTypeEndpoint(conn),
+		transport.PaymentDeductionTypeDecodeRequest,
+		transport.PaymentDeductionTypeListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+	http.Handle("/payment-deduction-type", paymentDeductionTypeRoute)
 }

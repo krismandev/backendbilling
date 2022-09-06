@@ -6,36 +6,39 @@ import (
 
 //LoginRequest is use for clients login
 type PaymentRequest struct {
-	ListPaymentID      []string               `json:"list_paymentid"`
-	PaymentID          string                 `json:"payment_id"`
-	InvoiceID          string                 `json:"invoice_id"`
-	PaymentDate        string                 `json:"payment_date"`
-	Total              string                 `json:"total"`
-	Note               string                 `json:"note"`
-	CreatedBy          string                 `json:"created_by"`
-	UserName           string                 `json:"username"`
-	PaymentType        string                 `json:"payment_type"`
-	ClearingDate       string                 `json:"clearing_date"`
-	CardNumber         string                 `json:"card_number"`
-	PaymentMethod      string                 `json:"payment_method"`
-	LastUpdateUsername string                 `json:"last_update_username"`
-	AccountID          string                 `json:"account_id"`
-	PaymentDeduction   PaymentDeductionStruct `json:"payment_deduction"`
-	Param              core.DataTableParam    `json:"param"`
+	ListPaymentID      []string                     `json:"list_paymentid"`
+	PaymentID          string                       `json:"payment_id"`
+	InvoiceID          string                       `json:"invoice_id"`
+	PaymentDate        string                       `json:"payment_date"`
+	Total              string                       `json:"total"`
+	Note               string                       `json:"note"`
+	CreatedBy          string                       `json:"created_by"`
+	UserName           string                       `json:"username"`
+	PaymentType        string                       `json:"payment_type"`
+	ClearingDate       string                       `json:"clearing_date"`
+	CardNumber         string                       `json:"card_number"`
+	PaymentMethod      string                       `json:"payment_method"`
+	LastUpdateUsername string                       `json:"last_update_username"`
+	AccountID          string                       `json:"account_id"`
+	PaymentDeduction   []PaymentDeductionDataStruct `json:"payment_deductions"`
+	Param              core.DataTableParam          `json:"param"`
 }
 
 type PaymentDataStruct struct {
-	PaymentID     string `json:"payment_id"`
-	InvoiceID     string `json:"invoice_id"`
-	PaymentDate   string `json:"payment_date"`
-	Total         string `json:"total"`
-	Note          string `json:"note"`
-	CreatedBy     string `json:"created_by"`
-	UserName      string `json:"username"`
-	PaymentType   string `json:"payment_type"`
-	ClearingDate  string `json:"clearing_date"`
-	CardNumber    string `json:"card_number"`
-	PaymentMethod string `json:"payment_method"`
+	PaymentID        string                       `json:"payment_id"`
+	InvoiceID        string                       `json:"invoice_id"`
+	PaymentDate      string                       `json:"payment_date"`
+	Total            string                       `json:"total"`
+	Note             string                       `json:"note"`
+	CreatedBy        string                       `json:"created_by"`
+	UserName         string                       `json:"username"`
+	PaymentType      string                       `json:"payment_type"`
+	ClearingDate     string                       `json:"clearing_date"`
+	CardNumber       string                       `json:"card_number"`
+	PaymentMethod    string                       `json:"payment_method"`
+	Status           string                       `json:"status"`
+	OcsStatus        string                       `json:"ocs_status"`
+	PaymentDeduction []PaymentDeductionDataStruct `json:"payment_deductions"`
 
 	Invoice InvoiceDataStruct `json:"invoice"`
 }
@@ -116,9 +119,29 @@ type AccountDataStruct struct {
 	LastUpdateUsername string `json:"last_update_username"`
 }
 
-type PaymentDeductionStruct struct {
-	PaymentID string `json:"payment_id"`
-	PPN       string `json:"ppn"`
-	PPH       string `json:"pph"`
-	AdminFee  string `json:"admin_fee"`
+type PaymentDeductionDataStruct struct {
+	PaymentDeductionTypeID string `json:"payment_deduction_type_id"`
+	PaymentID              string `json:"payment_id"`
+	Amount                 string `json:"amount"`
+	Description            string `json:"description"`
+}
+
+type PaymentDeductionTypeRequest struct {
+	PaymentDeductionTypeID     string              `json:"payment_deduction_type_id"`
+	Description                string              `json:"description"`
+	Category                   string              `json:"category"`
+	Amount                     string              `json:"amount"`
+	LastUpdateUsername         string              `json:"last_update_username"`
+	LastUpdateDate             string              `json:"last_update_date"`
+	ListPaymentDeductionTypeID []string            `json:"list_payment_deduction_type_id"`
+	Param                      core.DataTableParam `json:"param"`
+}
+
+type PaymentDeductionTypeDataStruct struct {
+	PaymentDeductionTypeID string `json:"payment_deduction_type_id"`
+	Description            string `json:"description"`
+	Category               string `json:"category"`
+	Amount                 string `json:"amount"`
+	LastUpdateUsername     string `json:"last_update_username"`
+	LastUpdateDate         string `json:"last_update_date"`
 }
