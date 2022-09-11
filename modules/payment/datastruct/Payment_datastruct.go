@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	"billingdashboard/core"
+	"billingdashboard/modules/payment-method/datastruct"
 )
 
 //LoginRequest is use for clients login
@@ -12,33 +13,37 @@ type PaymentRequest struct {
 	PaymentDate        string                       `json:"payment_date"`
 	Total              string                       `json:"total"`
 	Note               string                       `json:"note"`
-	CreatedBy          string                       `json:"created_by"`
-	UserName           string                       `json:"username"`
 	PaymentType        string                       `json:"payment_type"`
 	ClearingDate       string                       `json:"clearing_date"`
 	CardNumber         string                       `json:"card_number"`
 	PaymentMethod      string                       `json:"payment_method"`
+	Status             string                       `json:"status"`
+	OcsStatus          string                       `json:"ocs_status"`
+	WebUserID          string                       `json:"web_user_id"`
 	LastUpdateUsername string                       `json:"last_update_username"`
 	AccountID          string                       `json:"account_id"`
+	InvoiceNo          string                       `json:"invoice_no"`
 	PaymentDeduction   []PaymentDeductionDataStruct `json:"payment_deductions"`
 	Param              core.DataTableParam          `json:"param"`
 }
 
 type PaymentDataStruct struct {
-	PaymentID        string                       `json:"payment_id"`
-	InvoiceID        string                       `json:"invoice_id"`
-	PaymentDate      string                       `json:"payment_date"`
-	Total            string                       `json:"total"`
-	Note             string                       `json:"note"`
-	CreatedBy        string                       `json:"created_by"`
-	UserName         string                       `json:"username"`
-	PaymentType      string                       `json:"payment_type"`
-	ClearingDate     string                       `json:"clearing_date"`
-	CardNumber       string                       `json:"card_number"`
-	PaymentMethod    string                       `json:"payment_method"`
-	Status           string                       `json:"status"`
-	OcsStatus        string                       `json:"ocs_status"`
-	PaymentDeduction []PaymentDeductionDataStruct `json:"payment_deductions"`
+	PaymentID           string                             `json:"payment_id"`
+	InvoiceID           string                             `json:"invoice_id"`
+	PaymentDate         string                             `json:"payment_date"`
+	Total               string                             `json:"total"`
+	Note                string                             `json:"note"`
+	PaymentType         string                             `json:"payment_type"`
+	ClearingDate        string                             `json:"clearing_date"`
+	CardNumber          string                             `json:"card_number"`
+	PaymentMethod       string                             `json:"payment_method"`
+	Status              string                             `json:"status"`
+	OcsStatus           string                             `json:"ocs_status"`
+	WebUserID           string                             `json:"web_user_id"`
+	LastUpdateUsername  string                             `json:"last_update_username"`
+	LastUpdateDate      string                             `json:"last_update_date"`
+	PaymentDeduction    []PaymentDeductionDataStruct       `json:"payment_deductions"`
+	PaymentMethodObject datastruct.PaymentMethodDataStruct `json:"payment_method_object"`
 
 	Invoice InvoiceDataStruct `json:"invoice"`
 }
@@ -119,11 +124,25 @@ type AccountDataStruct struct {
 	LastUpdateUsername string `json:"last_update_username"`
 }
 
+type PaymentDeductionRequest struct {
+	PaymentDeductionTypeID string              `json:"payment_deduction_type_id"`
+	PaymentID              string              `json:"payment_id"`
+	Amount                 string              `json:"amount"`
+	InvoiceID              string              `json:"invoice_id"`
+	Description            string              `json:"description"`
+	UniqueInInvoice        string              `json:"unique_in_invoice"`
+	Status                 string              `json:"status"`
+	Param                  core.DataTableParam `json:"param"`
+}
+
 type PaymentDeductionDataStruct struct {
 	PaymentDeductionTypeID string `json:"payment_deduction_type_id"`
 	PaymentID              string `json:"payment_id"`
 	Amount                 string `json:"amount"`
+	InvoiceID              string `json:"invoice_id"`
 	Description            string `json:"description"`
+	UniqueInInvoice        string `json:"unique_in_invoice"`
+	Status                 string `json:"status"`
 }
 
 type PaymentDeductionTypeRequest struct {
@@ -144,4 +163,19 @@ type PaymentDeductionTypeDataStruct struct {
 	Amount                 string `json:"amount"`
 	LastUpdateUsername     string `json:"last_update_username"`
 	LastUpdateDate         string `json:"last_update_date"`
+}
+
+type AdjustmentReasonRequest struct {
+	Key           string              `json:"key"`
+	Description   string              `json:"description"`
+	PaymentMethod string              `json:"payment_method"`
+	CurrencyCode  string              `json:"currency_code"`
+	Param         core.DataTableParam `json:"param"`
+}
+
+type AdjustmentReasonDataStruct struct {
+	Key           string `json:"key"`
+	Description   string `json:"description"`
+	PaymentMethod string `json:"payment_method"`
+	CurrencyCode  string `json:"currency_code"`
 }

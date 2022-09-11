@@ -112,3 +112,41 @@ func ListPaymentDeductionTypeEndpoint(conn *connections.Connections) endpoint.En
 		return errResp, nil
 	}
 }
+
+func ListPaymentDeductionEndpoint(conn *connections.Connections) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var errResp core.GlobalListResponse
+		errNoJWT, errJWT := core.HandleJWT(ctx)
+		if errJWT != nil {
+			core.ErrorGlobalListResponse(&errResp, errNoJWT, errJWT.Error(), errJWT)
+			return errResp, nil
+		}
+
+		if req, ok := request.(dt.PaymentDeductionRequest); ok {
+			return services.ListPaymentDeduction(ctx, req, conn), nil
+		}
+
+		log.Error("Unhandled error occured: request is in unknown format")
+		core.ErrorGlobalListResponse(&errResp, core.ErrOthers, core.DescOthers, errors.New("Request is in unknown format"))
+		return errResp, nil
+	}
+}
+
+func ListAdjustmentReasonEndpoint(conn *connections.Connections) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var errResp core.GlobalListResponse
+		errNoJWT, errJWT := core.HandleJWT(ctx)
+		if errJWT != nil {
+			core.ErrorGlobalListResponse(&errResp, errNoJWT, errJWT.Error(), errJWT)
+			return errResp, nil
+		}
+
+		if req, ok := request.(dt.AdjustmentReasonRequest); ok {
+			return services.ListAdjustmentReason(ctx, req, conn), nil
+		}
+
+		log.Error("Unhandled error occured: request is in unknown format")
+		core.ErrorGlobalListResponse(&errResp, core.ErrOthers, core.DescOthers, errors.New("Request is in unknown format"))
+		return errResp, nil
+	}
+}

@@ -49,17 +49,17 @@ func CreatePayment(ctx context.Context, req dt.PaymentRequest, conn *connections
 	}
 
 	// block request if data is already exists
-	err = models.CheckIsItPaid(req.InvoiceID, conn, req)
-	if err != nil {
-		core.ErrorGlobalSingleResponse(&response, core.ErrDataExists, "This invoice already paid", err)
-		return response
-	}
+	// err = models.CheckIsItPaid(req.InvoiceID, conn, req)
+	// if err != nil {
+	// 	core.ErrorGlobalSingleResponse(&response, core.ErrDataExists, "This invoice already paid", err)
+	// 	return response
+	// }
 
-	errCheckNominal := models.CheckPaymentNominal(conn, req)
-	if errCheckNominal != nil {
-		core.ErrorGlobalSingleResponse(&response, core.ErrDataExists, errCheckNominal.Error(), errCheckNominal)
-		return response
-	}
+	// errCheckNominal := models.CheckPaymentNominal(conn, req)
+	// if errCheckNominal != nil {
+	// 	core.ErrorGlobalSingleResponse(&response, core.ErrDataExists, errCheckNominal.Error(), errCheckNominal)
+	// 	return response
+	// }
 	// process input
 	err = processors.InsertPayment(conn, req)
 	if err != nil {
@@ -143,6 +143,52 @@ func ListPaymentDeductionType(ctx context.Context, req dt.PaymentDeductionTypeRe
 
 	// append list data as []interface{}
 	for _, ls := range listPaymentDeductionType {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}
+
+// ListPaymentDeduction is use for
+func ListPaymentDeduction(ctx context.Context, req dt.PaymentDeductionRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("PaymentService.ListPaymentDeduction Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	listPayment, err := processors.GetListPaymentDeduction(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listPayment {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}
+
+// ListAdjustmentReason is use for
+func ListAdjustmentReason(ctx context.Context, req dt.AdjustmentReasonRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("PaymentService.ListAdjustmentReason Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	listAdjustmentReason, err := processors.GetListAdjustmentReason(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listAdjustmentReason {
 		response.Data.List = append(response.Data.List, ls)
 	}
 

@@ -14,6 +14,8 @@ import (
 func InitRoutes(conn *connections.Connections) {
 	PaymentRoute(conn)
 	PaymentDeductionTypeRoute(conn)
+	PaymentDeductionRoute(conn)
+	AdjustmentReasonRoute(conn)
 }
 
 // PaymentRoute is used for
@@ -60,4 +62,28 @@ func PaymentDeductionTypeRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/payment-deduction-type", paymentDeductionTypeRoute)
+}
+
+func PaymentDeductionRoute(conn *connections.Connections) {
+	paymentDeductionRoute := mux.NewRouter()
+	paymentDeductionRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListPaymentDeductionEndpoint(conn),
+		transport.PaymentDeductionDecodeRequest,
+		transport.PaymentDeductionListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+	http.Handle("/payment-deduction", paymentDeductionRoute)
+}
+
+func AdjustmentReasonRoute(conn *connections.Connections) {
+	adjustmentReasonRoute := mux.NewRouter()
+	adjustmentReasonRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListAdjustmentReasonEndpoint(conn),
+		transport.AdjustmentReasonDecodeRequest,
+		transport.AdjustmentReasonListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+	http.Handle("/adjustment-reason", adjustmentReasonRoute)
 }
