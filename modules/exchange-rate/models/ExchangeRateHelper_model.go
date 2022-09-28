@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/exchange-rate/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/exchange-rate/datastruct"
 )
 
 func GetSingleExchangeRate(stubID string, conn *connections.Connections, req datastruct.ExchangeRateRequest) (map[string]string, error) {

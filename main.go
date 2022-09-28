@@ -1,10 +1,10 @@
 package main
 
 import (
-	"billingdashboard/config"
-	"billingdashboard/connections"
-	lib "billingdashboard/lib"
-	"billingdashboard/routes"
+	"backendbillingdashboard/config"
+	"backendbillingdashboard/connections"
+	lib "backendbillingdashboard/lib"
+	"backendbillingdashboard/routes"
 	"bytes"
 	"context"
 	"flag"

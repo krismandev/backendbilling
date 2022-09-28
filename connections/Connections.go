@@ -1,8 +1,8 @@
 package connections
 
 import (
-	"billingdashboard/config"
-	"billingdashboard/lib"
+	"backendbillingdashboard/config"
+	"backendbillingdashboard/lib"
 	"context"
 
 	redis "github.com/go-redis/redis/v7"

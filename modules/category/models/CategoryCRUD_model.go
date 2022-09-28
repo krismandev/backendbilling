@@ -1,9 +1,9 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/lib"
-	"billingdashboard/modules/category/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/lib"
+	"backendbillingdashboard/modules/category/datastruct"
 )
 
 func GetCategoryFromRequest(conn *connections.Connections, req datastruct.CategoryRequest) ([]map[string]string, error) {

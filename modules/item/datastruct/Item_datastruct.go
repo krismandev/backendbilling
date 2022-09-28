@@ -1,7 +1,7 @@
 package datastruct
 
 import (
-	"billingdashboard/core"
+	"backendbillingdashboard/core"
 )
 
 //LoginRequest is use for clients login

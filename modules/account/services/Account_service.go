@@ -1,12 +1,12 @@
 package services
 
 import (
-	connections "billingdashboard/connections"
-	"billingdashboard/core"
-	"billingdashboard/lib"
-	dt "billingdashboard/modules/account/datastruct"
-	"billingdashboard/modules/account/models"
-	"billingdashboard/modules/account/processors"
+	connections "backendbillingdashboard/connections"
+	"backendbillingdashboard/core"
+	"backendbillingdashboard/lib"
+	dt "backendbillingdashboard/modules/account/datastruct"
+	"backendbillingdashboard/modules/account/models"
+	"backendbillingdashboard/modules/account/processors"
 	"context"
 	"encoding/json"
 	"fmt"

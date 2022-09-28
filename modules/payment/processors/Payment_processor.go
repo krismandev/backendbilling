@@ -1,10 +1,10 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	paymentMethodDt "billingdashboard/modules/payment-method/datastruct"
-	"billingdashboard/modules/payment/datastruct"
-	"billingdashboard/modules/payment/models"
+	"backendbillingdashboard/connections"
+	paymentMethodDt "backendbillingdashboard/modules/payment-method/datastruct"
+	"backendbillingdashboard/modules/payment/datastruct"
+	"backendbillingdashboard/modules/payment/models"
 )
 
 func GetListPayment(conn *connections.Connections, req datastruct.PaymentRequest) ([]datastruct.PaymentDataStruct, error) {

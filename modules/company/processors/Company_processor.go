@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/company/datastruct"
-	"billingdashboard/modules/company/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/company/datastruct"
+	"backendbillingdashboard/modules/company/models"
 )
 
 func GetListCompany(conn *connections.Connections, req datastruct.CompanyRequest) ([]datastruct.CompanyDataStruct, error) {

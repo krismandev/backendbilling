@@ -1,9 +1,9 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/lib"
-	"billingdashboard/modules/server-data/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/lib"
+	"backendbillingdashboard/modules/server-data/datastruct"
 
 	log "github.com/sirupsen/logrus"
 )

@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/currency/datastruct"
-	"billingdashboard/modules/currency/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/currency/datastruct"
+	"backendbillingdashboard/modules/currency/models"
 )
 
 func GetListCurrency(conn *connections.Connections, req datastruct.CurrencyRequest) ([]datastruct.CurrencyDataStruct, error) {

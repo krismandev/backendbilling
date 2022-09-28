@@ -1,11 +1,11 @@
 package services
 
 import (
-	connections "billingdashboard/connections"
-	"billingdashboard/core"
-	dt "billingdashboard/modules/server-data/datastruct"
-	"billingdashboard/modules/server-data/models"
-	"billingdashboard/modules/server-data/processors"
+	connections "backendbillingdashboard/connections"
+	"backendbillingdashboard/core"
+	dt "backendbillingdashboard/modules/server-data/datastruct"
+	"backendbillingdashboard/modules/server-data/models"
+	"backendbillingdashboard/modules/server-data/processors"
 	"context"
 	"time"
 

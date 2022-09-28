@@ -1,9 +1,9 @@
 package core
 
 import (
-	"billingdashboard/config"
-	"billingdashboard/connections"
-	"billingdashboard/lib"
+	"backendbillingdashboard/config"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/lib"
 	"fmt"
 	"net/http"
 

@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/config/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/config/datastruct"
 )
 
 func GetSingleConfig(configID string, conn *connections.Connections, req datastruct.ConfigRequest) (map[string]string, error) {

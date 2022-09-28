@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/exchange-rate/datastruct"
-	"billingdashboard/modules/exchange-rate/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/exchange-rate/datastruct"
+	"backendbillingdashboard/modules/exchange-rate/models"
 )
 
 func GetListExchangeRate(conn *connections.Connections, req datastruct.ExchangeRateRequest) ([]datastruct.ExchangeRateDataStruct, error) {

@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/server-account/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/server-account/datastruct"
 )
 
 func GetSingleServerAccount(ServerAccountID string, conn *connections.Connections, req datastruct.ServerAccountRequest) (map[string]string, error) {

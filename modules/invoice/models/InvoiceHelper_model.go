@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/invoice/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/invoice/datastruct"
 	"errors"
 	"strconv"
 )

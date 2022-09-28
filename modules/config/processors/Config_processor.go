@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/config/datastruct"
-	"billingdashboard/modules/config/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/config/datastruct"
+	"backendbillingdashboard/modules/config/models"
 )
 
 func GetListConfig(conn *connections.Connections, req datastruct.ConfigRequest) ([]datastruct.ConfigDataStruct, error) {

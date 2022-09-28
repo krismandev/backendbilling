@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/stub/datastruct"
-	"billingdashboard/modules/stub/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/stub/datastruct"
+	"backendbillingdashboard/modules/stub/models"
 )
 
 func GetListStub(conn *connections.Connections, req datastruct.StubRequest) ([]datastruct.StubDataStruct, error) {

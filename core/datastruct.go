@@ -1,7 +1,7 @@
 package core
 
 import (
-	"billingdashboard/lib"
+	"backendbillingdashboard/lib"
 	"context"
 
 	logger "github.com/sirupsen/logrus"

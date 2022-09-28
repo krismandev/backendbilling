@@ -36,5 +36,5 @@ redis:
   db: 0
 
 log:
-  filenamePrefix: ./log/billingdashboard
+  filenamePrefix: ./log/backendbillingdashboard
   level: debug

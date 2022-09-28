@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/stub/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/stub/datastruct"
 )
 
 func GetStubFromRequest(conn *connections.Connections, req datastruct.StubRequest) ([]map[string]string, error) {

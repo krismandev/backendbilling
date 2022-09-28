@@ -1,9 +1,9 @@
 package core
 
 import (
-	"billingdashboard/config"
-	conf "billingdashboard/config"
-	lib "billingdashboard/lib"
+	"backendbillingdashboard/config"
+	conf "backendbillingdashboard/config"
+	lib "backendbillingdashboard/lib"
 	"context"
 	"encoding/json"
 	"errors"

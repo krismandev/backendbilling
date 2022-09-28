@@ -1,4 +1,4 @@
-module billingdashboard
+module backendbillingdashboard
 
 go 1.18
 
@@ -12,7 +12,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
+	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )
 

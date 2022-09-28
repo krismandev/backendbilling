@@ -1,7 +1,7 @@
 package connections
 
 import (
-	"billingdashboard/config"
+	"backendbillingdashboard/config"
 	"os"
 	"time"
 

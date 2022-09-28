@@ -1,11 +1,11 @@
 package core
 
 import (
-	connections "billingdashboard/connections"
+	connections "backendbillingdashboard/connections"
 	"context"
 
 	//"strings"
-	conf "billingdashboard/config"
+	conf "backendbillingdashboard/config"
 
 	log "github.com/sirupsen/logrus"
 )

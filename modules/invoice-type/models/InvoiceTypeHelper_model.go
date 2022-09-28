@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/invoice-type/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/invoice-type/datastruct"
 )
 
 func GetSingleInvoiceType(invoiceTypeID string, conn *connections.Connections, req datastruct.InvoiceTypeRequest) (map[string]string, error) {

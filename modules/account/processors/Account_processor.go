@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/account/datastruct"
-	"billingdashboard/modules/account/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/account/datastruct"
+	"backendbillingdashboard/modules/account/models"
 
 	"github.com/sirupsen/logrus"
 )

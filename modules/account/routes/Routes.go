@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/account/transport"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/account/transport"
 	"net/http"
 
-	"billingdashboard/core"
+	"backendbillingdashboard/core"
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"

@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/server-account/datastruct"
-	"billingdashboard/modules/server-account/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/server-account/datastruct"
+	"backendbillingdashboard/modules/server-account/models"
 )
 
 func GetListServerAccount(conn *connections.Connections, req datastruct.ServerAccountRequest) ([]datastruct.ServerAccountDataStruct, error) {

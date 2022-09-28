@@ -1,10 +1,10 @@
 package transport
 
 import (
-	connections "billingdashboard/connections"
-	"billingdashboard/core"
-	dt "billingdashboard/modules/config/datastruct"
-	"billingdashboard/modules/config/services"
+	connections "backendbillingdashboard/connections"
+	"backendbillingdashboard/core"
+	dt "backendbillingdashboard/modules/config/datastruct"
+	"backendbillingdashboard/modules/config/services"
 	"context"
 	"errors"
 

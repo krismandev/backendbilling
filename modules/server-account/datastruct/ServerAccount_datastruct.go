@@ -1,7 +1,7 @@
 package datastruct
 
 import (
-	"billingdashboard/core"
+	"backendbillingdashboard/core"
 )
 
 type ServerAccountRequest struct {

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"billingdashboard/autocrud/copy"
+	"backendbillingdashboard/autocrud/copy"
 )
 
 var moduleLocation = "../modules/"

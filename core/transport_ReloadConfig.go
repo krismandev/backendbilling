@@ -1,10 +1,10 @@
 package core
 
 import (
-	conf "billingdashboard/config"
-	connections "billingdashboard/connections"
-	er "billingdashboard/error"
-	lib "billingdashboard/lib"
+	conf "backendbillingdashboard/config"
+	connections "backendbillingdashboard/connections"
+	er "backendbillingdashboard/error"
+	lib "backendbillingdashboard/lib"
 	"context"
 	"encoding/json"
 	"net/http"

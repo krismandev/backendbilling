@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/currency/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/currency/datastruct"
 )
 
 func GetSingleCurrency(currencyID string, conn *connections.Connections, req datastruct.CurrencyRequest) (map[string]string, error) {

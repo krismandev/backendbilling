@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/item-price/datastruct"
-	"billingdashboard/modules/item-price/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/item-price/datastruct"
+	"backendbillingdashboard/modules/item-price/models"
 )
 
 func GetListItemPrice(conn *connections.Connections, req datastruct.ItemPriceRequest) ([]datastruct.ItemPriceDataStruct, error) {

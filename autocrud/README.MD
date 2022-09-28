@@ -10,4 +10,4 @@ with
 var moduleLocation = "./modules/"
 ```
 
-then you can run the command with *go build*, and move the executable path to billingdashboard root directory.
+then you can run the command with *go build*, and move the executable path to backendbillingdashboard root directory.

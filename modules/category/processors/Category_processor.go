@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/category/datastruct"
-	"billingdashboard/modules/category/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/category/datastruct"
+	"backendbillingdashboard/modules/category/models"
 )
 
 func GetListCategory(conn *connections.Connections, req datastruct.CategoryRequest) ([]datastruct.CategoryDataStruct, error) {

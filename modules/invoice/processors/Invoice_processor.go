@@ -1,9 +1,9 @@
 package processors
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/invoice/datastruct"
-	"billingdashboard/modules/invoice/models"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/invoice/datastruct"
+	"backendbillingdashboard/modules/invoice/models"
 )
 
 func GetListInvoice(conn *connections.Connections, req datastruct.InvoiceRequest) ([]datastruct.InvoiceDataStruct, error) {

@@ -1,11 +1,11 @@
 package services
 
 import (
-	connections "billingdashboard/connections"
-	"billingdashboard/core"
-	dt "billingdashboard/modules/item/datastruct"
-	"billingdashboard/modules/item/models"
-	"billingdashboard/modules/item/processors"
+	connections "backendbillingdashboard/connections"
+	"backendbillingdashboard/core"
+	dt "backendbillingdashboard/modules/item/datastruct"
+	"backendbillingdashboard/modules/item/models"
+	"backendbillingdashboard/modules/item/processors"
 	"context"
 
 	log "github.com/sirupsen/logrus"

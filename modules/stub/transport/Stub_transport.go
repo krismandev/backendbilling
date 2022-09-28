@@ -1,9 +1,9 @@
 package transport
 
 import (
-	"billingdashboard/core"
-	er "billingdashboard/error"
-	dt "billingdashboard/modules/stub/datastruct"
+	"backendbillingdashboard/core"
+	er "backendbillingdashboard/error"
+	dt "backendbillingdashboard/modules/stub/datastruct"
 	"context"
 	"encoding/json"
 	"io/ioutil"

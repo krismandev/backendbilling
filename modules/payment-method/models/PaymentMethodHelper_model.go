@@ -1,8 +1,8 @@
 package models
 
 import (
-	"billingdashboard/connections"
-	"billingdashboard/modules/payment-method/datastruct"
+	"backendbillingdashboard/connections"
+	"backendbillingdashboard/modules/payment-method/datastruct"
 )
 
 func GetSinglePaymentMethod(stubID string, conn *connections.Connections, req datastruct.PaymentMethodRequest) (map[string]string, error) {
