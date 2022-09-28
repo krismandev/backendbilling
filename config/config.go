@@ -18,6 +18,7 @@ type Configuration struct {
 	Env                      string         `yaml:"env"`
 	ListenPort               string         `yaml:"listenPort"`
 	DBList                   map[string]TDB `yaml:"dblist"`
+	ManagementUrl            string         `yaml:"managementUrl"`
 	AppName                  string         `yaml:"appName"`
 	UseJWT                   bool           `yaml:"useJWT"`
 	JWTSecretKey             string         `yaml:"JWTSecretKey"`

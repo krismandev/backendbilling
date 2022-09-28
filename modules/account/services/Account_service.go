@@ -3,10 +3,14 @@ package services
 import (
 	connections "billingdashboard/connections"
 	"billingdashboard/core"
+	"billingdashboard/lib"
 	dt "billingdashboard/modules/account/datastruct"
 	"billingdashboard/modules/account/models"
 	"billingdashboard/modules/account/processors"
 	"context"
+	"encoding/json"
+	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -29,7 +33,26 @@ func ListAccount(ctx context.Context, req dt.AccountRequest, conn *connections.C
 
 	// append list data as []interface{}
 	for _, ls := range listAccount {
+		if len(req.AccountID) > 0 {
+			jsonParam := fmt.Sprintf(`{"accountid":"%v"}`, ls.AccountID)
+			log.Info("JsonParam-", jsonParam)
+			resp, httpStatus := lib.CallRestAPI(conn.ManagementUrl+"/account", "GET", jsonParam, time.Duration(30)*time.Second)
+			if httpStatus != 200 {
+				core.ErrorGlobalListResponse(&response, core.ErrServer, "Error Call Rest API", err)
+				return response
+			}
+			var tmpAccounts dt.AccountJsonResponse
+			err = json.Unmarshal([]byte(resp), &tmpAccounts)
+			if tmpAccounts.ResponseData.TotalData > 0 {
+				ls.BalanceList = tmpAccounts.ResponseData.Lists[0].BalanceList
+			}
+		}
 		response.Data.List = append(response.Data.List, ls)
+	}
+
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, err.Error(), err)
+		return response
 	}
 
 	return response

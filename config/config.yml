@@ -1,6 +1,8 @@
 env: local
 listenPort: :1917
 
+managementUrl: http://127.0.0.1:31905
+
 dblist: 
   app:
     dbType: mysql

@@ -10,12 +10,13 @@ import (
 
 //Connections Holds all passing value to functions
 type Connections struct {
-	DBAppConn    *lib.DBConnection
-	DBDashbConn  *lib.DBConnection
-	DBOcsConn    *lib.DBConnection
-	DBRedis      *redis.Client
-	Context      context.Context
-	JWTSecretKey string
+	DBAppConn     *lib.DBConnection
+	DBDashbConn   *lib.DBConnection
+	DBOcsConn     *lib.DBConnection
+	DBRedis       *redis.Client
+	Context       context.Context
+	ManagementUrl string
+	JWTSecretKey  string
 }
 
 //InitiateConnections is for Initiate Connection
@@ -35,6 +36,8 @@ func InitiateConnections(param config.Configuration) *Connections {
 
 	dbOcsbconn := lib.InitDB(param.DBList["ocs"].DBType, param.DBList["ocs"].DBUrl)
 	conn.DBOcsConn = &dbOcsbconn
+
+	conn.ManagementUrl = param.ManagementUrl
 
 	return &conn
 
