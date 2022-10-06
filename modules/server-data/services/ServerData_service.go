@@ -20,7 +20,7 @@ func ListServerData(ctx context.Context, req dt.ServerDataRequest, conn *connect
 	var response = core.DefaultGlobalListResponse(ctx)
 	var err error
 
-	if len(req.CurrencyCode) == 0 || len(req.AccountID) == 0 || len(req.MonthUse) == 0 {
+	if len(req.CurrencyCode) == 0 || len(req.MonthUse) == 0 {
 		core.ErrorGlobalListResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
 		return response
 	}
