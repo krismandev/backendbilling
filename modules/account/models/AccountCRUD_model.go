@@ -32,7 +32,7 @@ func GetAccountFromRequest(conn *connections.Connections, req datastruct.Account
 		lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
 	}
 
-	runQuery := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date, non_taxable FROM account "
+	runQuery := "SELECT account_id, name, status, company_id, address1, address2, account_type, billing_type,city, phone, contact_person, contact_person_phone ,account.desc, last_update_username, last_update_date, non_taxable, term_of_payment FROM account "
 	if len(baseWhere) > 0 {
 		runQuery += "WHERE " + baseWhere
 	}
@@ -74,12 +74,16 @@ func InsertAccount(conn *connections.Connections, req datastruct.AccountRequest)
 
 	lib.AppendComma(&baseIn, &baseParam, "?", req.LastUpdateUsername)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.NonTaxable)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.TermOfPayment)
 
-	qry := "INSERT INTO account (account_id,  name, status, company_id, account_type, billing_type, account.desc, address1,address2,city,phone,contact_person,contact_person_phone, last_update_username,non_taxable) VALUES (" + baseIn + ")"
+	qry := "INSERT INTO account (account_id,  name, status, company_id, account_type, billing_type, account.desc, address1,address2,city,phone,contact_person,contact_person_phone, last_update_username,non_taxable, term_of_payment ) VALUES (" + baseIn + ")"
 	_, err = conn.DBAppConn.InsertGetLastID(qry, baseParam...)
 
 	log.Info("InsertParam - ", baseParam)
-	_, _, err = conn.DBAppConn.Exec("UPDATE control_id set last_id=? where control_id.key=?", insertIdString, "account")
+	_, _, errUpdate := conn.DBAppConn.Exec("UPDATE control_id set last_id=? where control_id.key=?", insertIdString, "account")
+	if errUpdate != nil {
+		log.Error("Error - ", errUpdate)
+	}
 
 	return err
 }
@@ -104,6 +108,7 @@ func UpdateAccount(conn *connections.Connections, req datastruct.AccountRequest)
 	lib.AppendComma(&baseUp, &baseParam, "contact_person_phone = ?", req.ContactPersonPhone)
 	lib.AppendComma(&baseUp, &baseParam, "last_update_username = ?", req.LastUpdateUsername)
 	lib.AppendComma(&baseUp, &baseParam, "non_taxable = ?", req.NonTaxable)
+	lib.AppendComma(&baseUp, &baseParam, "term_of_payment = ?", req.TermOfPayment)
 
 	qry := "UPDATE account SET " + baseUp + " WHERE account_id = ?"
 	baseParam = append(baseParam, req.AccountID)

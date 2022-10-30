@@ -23,6 +23,7 @@ type AccountRequest struct {
 	LastUpdateUsername string              `json:"last_update_username"`
 	InvoiceTypeID      string              `json:"invoice_type_id"`
 	NonTaxable         string              `json:"non_taxable"`
+	TermOfPayment      string              `json:"term_of_payment"`
 	Param              core.DataTableParam `json:"param"`
 }
 
@@ -40,6 +41,7 @@ type AccountDataStruct struct {
 	Phone              string                     `json:"phone"`
 	ContactPerson      string                     `json:"contact_person"`
 	NonTaxable         string                     `json:"non_taxable"`
+	TermOfPayment      string                     `json:"term_of_payment"`
 	BalanceList        []AccountBalanceDataStruct `json:"balance_list"`
 	ContactPersonPhone string                     `json:"contact_person_phone"`
 	LastUpdateUsername string                     `json:"last_update_username"`
