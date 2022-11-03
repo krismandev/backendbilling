@@ -102,7 +102,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 
 		single["account"] = account
 
-		qryGetDetail := "SELECT invoice_detail.invoice_detail_id, invoice_detail.invoice_id, invoice_detail.itemid, invoice_detail.qty, invoice_detail.uom, invoice_detail.item_price, tiering, invoice_detail.note, invoice_detail.balance_type ,item.item_id as tblitem_item_id, item.item_name, item.operator, item.route, item.category, item.uom as tblitem_uom FROM invoice_detail JOIN item ON invoice_detail.itemid = item.item_id WHERE invoice_id = ?"
+		qryGetDetail := "SELECT invoice_detail.invoice_detail_id, invoice_detail.invoice_id, invoice_detail.itemid, invoice_detail.qty, invoice_detail.uom, invoice_detail.item_price, tiering, invoice_detail.note, invoice_detail.balance_type, invoice_detail.server_id ,item.item_id as tblitem_item_id, item.item_name, item.operator, item.route, item.category, item.uom as tblitem_uom, server.server_id as tblserver_server_id, server.server_name as tblserver_server_name FROM invoice_detail JOIN item ON invoice_detail.itemid = item.item_id  JOIN server ON invoice_detail.server_id = server.server_id WHERE invoice_id = ?"
 		resultGetDetail, _, errGetDetail := conn.DBAppConn.SelectQueryByFieldNameSlice(qryGetDetail, single["invoice_id"])
 		if errGetDetail != nil {
 			return nil, errGetDetail
@@ -120,6 +120,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 			singleDetail["tiering"] = detail["tiering"]
 			singleDetail["note"] = detail["note"]
 			singleDetail["balance_type"] = detail["balance_type"]
+			singleDetail["server_id"] = detail["server_id"]
 
 			item := make(map[string]interface{})
 			item["item_id"] = detail["tblitem_item_id"]
@@ -129,7 +130,12 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 			item["category"] = detail["category"]
 			item["uom"] = detail["uom"]
 
+			server := make(map[string]interface{})
+			server["server_id"] = detail["tblserver_server_id"]
+			server["server_name"] = detail["tblserver_server_name"]
+
 			singleDetail["item"] = item
+			singleDetail["server"] = server
 
 			tampungDetail = append(tampungDetail, singleDetail)
 
@@ -212,7 +218,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 		}
 		for _, each := range req.ListInvoiceDetail {
 			tempLastIdInvoiceDetail += 1
-			qryInsertDetail := "INSERT INTO invoice_detail (invoice_detail.invoice_detail_id, invoice_detail.invoice_id, invoice_detail.itemid, invoice_detail.qty, invoice_detail.uom, invoice_detail.item_price,invoice_detail.note, invoice_detail.balance_type, last_update_username) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"
+			qryInsertDetail := "INSERT INTO invoice_detail (invoice_detail.invoice_detail_id, invoice_detail.invoice_id, invoice_detail.itemid, invoice_detail.qty, invoice_detail.uom, invoice_detail.item_price,invoice_detail.note, invoice_detail.balance_type, invoice_detail.server_id ,last_update_username) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)"
 			var invDetailParam []interface{} = []interface{}{
 				tempLastIdInvoiceDetail,
 				insertIdString,
@@ -222,6 +228,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 				each.ItemPrice,
 				each.Note,
 				each.BalanceType,
+				each.ServerID,
 				createdBy,
 			}
 

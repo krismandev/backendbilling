@@ -4,6 +4,7 @@ import (
 	"backendbillingdashboard/connections"
 	"backendbillingdashboard/modules/server-data/datastruct"
 	"backendbillingdashboard/modules/server-data/models"
+	dtServer "backendbillingdashboard/modules/server/datastruct"
 )
 
 func GetListServerData(conn *connections.Connections, req datastruct.ServerDataRequest) ([]datastruct.ServerDataDataStruct, error) {
@@ -58,7 +59,13 @@ func CreateSingleServerDataStruct(serverData map[string]interface{}) datastruct.
 		ItemPrice: itemPrice,
 	}
 
+	server := dtServer.ServerDataStruct{
+		ServerID:   serverData["server"].(map[string]interface{})["server_id"].(string),
+		ServerName: serverData["server"].(map[string]interface{})["server_name"].(string),
+	}
+
 	single.Item = item
+	single.Server = server
 	return single
 }
 

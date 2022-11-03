@@ -6,7 +6,6 @@ import (
 	"backendbillingdashboard/modules/account/datastruct"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -170,7 +169,6 @@ func GetRootParentAccountFromRequest(conn *connections.Connections, req datastru
 func GetRootAccountFromRequest(conn *connections.Connections, req datastruct.AccountRequest) ([]map[string]string, error) {
 	var result []map[string]string
 	var err error
-	logrus.Info("Test")
 
 	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
 	var baseWhereInvoiceType string

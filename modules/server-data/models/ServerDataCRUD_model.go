@@ -54,8 +54,8 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	server_data.external_rootparent_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, 
 	server_data.external_transcount, server_data.external_balance_type, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, 
 	IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_balance_type in (` + currencyIn + `) ),server_data.external_price, item_price.price) as price, 
-	item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id  
-	FROM server_data LEFT JOIN item ON server_data.item_id=item.item_id LEFT JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
+	item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id, server.server_name as tblserver_server_name 
+	FROM server_data LEFT JOIN item ON server_data.item_id=item.item_id LEFT JOIN server ON server.server_id = server_data.server_id LEFT JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
 	AND server_data.account_id=item_price.account_id AND item_price.currency_code = ?`
 	if len(baseWhere) > 0 {
 		runQuery += " WHERE " + baseWhere
@@ -96,6 +96,12 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		item["item_name"] = each["item_name"]
 		item["category"] = each["category"]
 		item["uom"] = each["uom"]
+
+		server := make(map[string]interface{})
+		server["server_id"] = each["server_id"]
+		server["server_name"] = each["tblserver_server_name"]
+
+		single["server"] = server
 
 		// findItemPrice, _, errFindItemPrice := conn.DBAppConn.SelectQueryByFieldNameSlice("SELECT item_id,account_id,server_id,price FROM item_price WHERE item_id = ? AND account_id = ? AND server_id = ?", item["item_id"], req.AccountID, req.ServerID)
 		// if errFindItemPrice != nil {

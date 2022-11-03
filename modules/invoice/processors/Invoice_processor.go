@@ -4,6 +4,7 @@ import (
 	"backendbillingdashboard/connections"
 	"backendbillingdashboard/modules/invoice/datastruct"
 	"backendbillingdashboard/modules/invoice/models"
+	dtServer "backendbillingdashboard/modules/server/datastruct"
 )
 
 func GetListInvoice(conn *connections.Connections, req datastruct.InvoiceRequest) ([]datastruct.InvoiceDataStruct, error) {
@@ -84,6 +85,7 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 		detail.Uom = eachDetail["uom"].(string)
 		detail.Note = eachDetail["note"].(string)
 		detail.BalanceType = eachDetail["balance_type"].(string)
+		detail.ServerID = eachDetail["server_id"].(string)
 
 		var item datastruct.ItemDataStruct
 		item.ItemID = eachDetail["item"].(map[string]interface{})["item_id"].(string)
@@ -93,7 +95,12 @@ func CreateSingleInvoiceStruct(invoice map[string]interface{}) datastruct.Invoic
 		item.Category = eachDetail["item"].(map[string]interface{})["category"].(string)
 		item.UOM = eachDetail["item"].(map[string]interface{})["uom"].(string)
 
+		var server dtServer.ServerDataStruct
+		server.ServerID = eachDetail["server"].(map[string]interface{})["server_id"].(string)
+		server.ServerName = eachDetail["server"].(map[string]interface{})["server_name"].(string)
+
 		detail.Item = item
+		detail.Server = server
 
 		tampungDetail = append(tampungDetail, detail)
 	}

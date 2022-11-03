@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	"backendbillingdashboard/core"
+	dtServer "backendbillingdashboard/modules/server/datastruct"
 )
 
 //LoginRequest is use for clients login
@@ -47,7 +48,8 @@ type ServerDataDataStruct struct {
 	ExternalBalanceType       string `json:"external_balance_type"`
 	InvoiceID                 string `json:"invoice_id"`
 
-	Item ItemDataStruct `json:"item"`
+	Item   ItemDataStruct            `json:"item"`
+	Server dtServer.ServerDataStruct `json:"server"`
 }
 
 type ItemDataStruct struct {
