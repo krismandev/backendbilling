@@ -4,8 +4,6 @@ import (
 	"backendbillingdashboard/connections"
 	"backendbillingdashboard/lib"
 	"backendbillingdashboard/modules/invoice-type/datastruct"
-
-	"github.com/sirupsen/logrus"
 )
 
 func GetInvoiceTypeFromRequest(conn *connections.Connections, req datastruct.InvoiceTypeRequest) ([]map[string]string, error) {
@@ -34,7 +32,6 @@ func GetInvoiceTypeFromRequest(conn *connections.Connections, req datastruct.Inv
 	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
 
 	result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
-	logrus.Info("LihatResult-", result)
 	return result, err
 }
 

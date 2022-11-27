@@ -35,14 +35,15 @@ func CreateSingleServerDataStruct(serverData map[string]interface{}) datastruct.
 	single.ExternalTransdate, _ = serverData["external_transdate"].(string)
 	single.ExternalRootParentAccount, _ = serverData["external_rootparent_account"].(string)
 	single.ExternalPrice, _ = serverData["external_price"].(string)
-	// single.ExternalUserID, _ = serverData["external_user_id"].(string)
-	// single.ExternalSender, _ = serverData["external_sender"].(string)
-	// single.ExternalOperatorCode, _ = serverData["external_operatorcode"].(string)
-	// single.ExternalRoute, _ = serverData["external_route"].(string)
+	single.ExternalUserID, _ = serverData["external_user_id"].(string)
+	single.ExternalSender, _ = serverData["external_sender"].(string)
+	single.ExternalOperatorCode, _ = serverData["external_operatorcode"].(string)
+	single.ExternalRoute, _ = serverData["external_route"].(string)
 	single.ExternalSMSCount, _ = serverData["external_smscount"].(string)
 	single.ExternalTransCount, _ = serverData["external_transcount"].(string)
 	single.ExternalBalanceType, _ = serverData["external_balance_type"].(string)
 	single.InvoiceID, _ = serverData["invoice_id"].(string)
+	single.NewRoute, _ = serverData["new_route"].(string)
 
 	itemPrice := datastruct.ItemPriceDataStruct{
 		ItemID:    serverData["item"].(map[string]interface{})["item_price"].(map[string]interface{})["item_id"].(string),
@@ -110,4 +111,28 @@ func UpdateServerData(conn *connections.Connections, req datastruct.ServerDataRe
 func DeleteServerData(conn *connections.Connections, req datastruct.ServerDataRequest) error {
 	err := models.DeleteServerData(conn, req)
 	return err
+}
+
+func GetListSender(conn *connections.Connections, req datastruct.ServerDataRequest) ([]datastruct.SenderDataStruct, error) {
+	var output []datastruct.SenderDataStruct
+	var err error
+
+	// grab mapping data from model
+	senderList, err := models.GetSenderFromRequest(conn, req)
+	if err != nil {
+		return output, err
+	}
+
+	for _, sender := range senderList {
+		single := CreateSingleSenderStruct(sender)
+		output = append(output, single)
+	}
+
+	return output, err
+}
+
+func CreateSingleSenderStruct(sender map[string]string) datastruct.SenderDataStruct {
+	var single datastruct.SenderDataStruct
+	single.Sender = sender["external_sender"]
+	return single
 }

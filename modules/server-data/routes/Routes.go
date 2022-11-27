@@ -14,6 +14,7 @@ import (
 func InitRoutes(conn *connections.Connections) {
 	ServerDataRoute(conn)
 	LoadServerDataRoute(conn)
+	SenderRoute(conn)
 }
 
 // ServerDataRoute is used for
@@ -60,4 +61,16 @@ func LoadServerDataRoute(conn *connections.Connections) {
 		httptransport.ServerBefore(core.GetRequestInformation),
 	))
 	http.Handle("/server-data/load", loadServerDataRoute)
+}
+
+func SenderRoute(conn *connections.Connections) {
+	senderRoute := mux.NewRouter()
+	senderRoute.Methods("GET").Handler(httptransport.NewServer(
+		transport.ListSenderEndpoint(conn),
+		transport.ServerDataDecodeRequest,
+		transport.ServerDataListEncodeResponse,
+		httptransport.ServerBefore(httptransport.PopulateRequestContext),
+		httptransport.ServerBefore(core.GetRequestInformation),
+	))
+	http.Handle("/server-data/sender", senderRoute)
 }

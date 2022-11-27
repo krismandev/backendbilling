@@ -58,3 +58,19 @@ func ServerDataSingleEncodeResponse(ctx context.Context, w http.ResponseWriter, 
 
 	return err
 }
+
+// SenderListEncodeResponse is use for ...
+func SenderListEncodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	body, err := json.Marshal(&response)
+	core.LogBodyRequest(body, "Send Response")
+
+	if err != nil {
+		return err
+	}
+
+	var e = response.(core.GlobalListResponse).ResponseCode
+	w = core.WriteHTTPResponse(w, e)
+	_, err = w.Write(body)
+
+	return err
+}

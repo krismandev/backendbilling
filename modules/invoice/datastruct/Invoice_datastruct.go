@@ -36,6 +36,7 @@ type InvoiceRequest struct {
 	PPNAmount                  string   `json:"ppn_amount"`
 
 	ServerID          string                `json:"server_id"`
+	Sender            string                `json:"sender"`
 	ListInvoiceDetail []InvoiceDetailStruct `json:"list_invoice_detail"`
 
 	Param core.DataTableParam `json:"param"`
@@ -67,6 +68,7 @@ type InvoiceDataStruct struct {
 	DueDate            string `json:"due_date"`
 	GrandTotal         string `json:"grand_total"`
 	PPNAmount          string `json:"ppn_amount"`
+	Sender             string `json:"sender"`
 
 	InvoiceType InvoiceTypeDataStruct `json:"invoice_type"`
 	Account     AccountDataStruct     `json:"account"`

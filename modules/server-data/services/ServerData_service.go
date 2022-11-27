@@ -166,3 +166,31 @@ func DeleteServerData(ctx context.Context, req dt.ServerDataRequest, conn *conne
 
 	return response
 }
+
+// ListServerData is use for
+func ListSender(ctx context.Context, req dt.ServerDataRequest, conn *connections.Connections) core.GlobalListResponse {
+	log.Infof("ServerDataService.ListSender Request : %+v", req)
+	var response = core.DefaultGlobalListResponse(ctx)
+	var err error
+
+	if len(req.AccountID) == 0 || len(req.MonthUse) == 0 {
+		core.ErrorGlobalListResponse(&response, core.ErrIncompleteRequest, core.DescIncompleteRequest, err)
+		return response
+	}
+
+	listSender, err := processors.GetListSender(conn, req)
+	if err != nil {
+		core.ErrorGlobalListResponse(&response, core.ErrServer, core.DescServer, err)
+		return response
+	} else {
+		response.Data.Page = req.Param.Page
+		response.Data.PerPage = req.Param.PerPage
+	}
+
+	// append list data as []interface{}
+	for _, ls := range listSender {
+		response.Data.List = append(response.Data.List, ls)
+	}
+
+	return response
+}

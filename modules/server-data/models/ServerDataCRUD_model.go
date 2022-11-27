@@ -21,17 +21,18 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data_id = ?", req.ServerDataID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.server_id = ?", req.ServerID)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.account_id = ?", req.AccountID)
+	lib.AppendWhere(&baseWhere, &baseParam, "server_data.external_sender = ?", req.ExternalSender)
 	lib.AppendWhere(&baseWhere, &baseParam, "server_data.external_rootparent_account = ?", req.ExternalRootParentAccount)
 	lib.AppendWhere(&baseWhere, &baseParam, "DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?", req.MonthUse)
 	lib.AppendWhereRaw(&baseWhere, "server_data.invoice_id IS NULL")
 	// lib.AppendWhere(&baseWhere, &baseParam, "item_price.currency_code = ?", req.CurrencyCode)
 
-	if len(req.ListServerDataID) > 0 {
+	if len(req.ListExternalRootParentAccount) > 0 {
 		var baseIn string
-		for _, prid := range req.ListServerDataID {
-			lib.AppendComma(&baseIn, &baseParam, "?", prid)
+		for _, extrootaccountid := range req.ListExternalRootParentAccount {
+			lib.AppendComma(&baseIn, &baseParam, "?", extrootaccountid)
 		}
-		lib.AppendWhereRaw(&baseWhere, "server_data_id IN ("+baseIn+")")
+		lib.AppendWhereRaw(&baseWhere, "external_rootparent_account IN ("+baseIn+")")
 	}
 
 	resultCurrencey, _, errGetCurrency := conn.DBOcsConn.SelectQueryByFieldNameSlice("SELECT balance_type, balance_name, exponent, balance_category FROM ocs.balance WHERE balance_category = ?", "C")
@@ -52,11 +53,18 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 	// runQuery := "SELECT server_data_id, server_id, server_account, item_id, account_id, external_smscount,external_transdate, external_transcount, invoice_id FROM server_data "
 	runQuery := `SELECT server_data.server_data_id, server_data.server_id, server_data.external_account_id, 
 	server_data.external_rootparent_account, server_data.item_id, server_data.account_id, server_data.external_smscount,server_data.external_transdate, 
-	server_data.external_transcount, server_data.external_balance_type, server_data.invoice_id, item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, 
-	IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_balance_type in (` + currencyIn + `) ),server_data.external_price, item_price.price) as price, 
-	item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id, server.server_name as tblserver_server_name 
-	FROM server_data LEFT JOIN item ON server_data.item_id=item.item_id LEFT JOIN server ON server.server_id = server_data.server_id LEFT JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
-	AND server_data.account_id=item_price.account_id AND item_price.currency_code = ?`
+	server_data.external_transcount, server_data.external_balance_type, server_data.invoice_id,server_data.external_user_id, 
+	server_data.external_sender, server_data.external_operatorcode, server_data.external_route, 
+	item.item_id as tblitem_item_id, item.item_name, item.uom, item.category, item_price.item_id as tblitem_price_item_id, 
+	IF((server_data.external_price IS NOT NULL && server_data.external_price <> 0 && server_data.external_balance_type in (` + currencyIn + `) ),
+	server_data.external_price, item_price.price) as price, item_price.server_id as tblitem_price_server_id, item_price.account_id as tblitem_price_account_id, 
+	server.server_name as tblserver_server_name, mapping_operator.new_route 
+	FROM server_data 
+	LEFT JOIN item ON server_data.item_id=item.item_id 
+	LEFT JOIN server ON server.server_id = server_data.server_id 
+	LEFT JOIN item_price ON item.item_id=item_price.item_id AND server_data.server_id=item_price.server_id 
+		AND server_data.account_id=item_price.account_id AND item_price.currency_code = ? 
+	LEFT JOIN mapping_operator ON server_data.external_operatorcode = mapping_operator.operatorcode AND server_data.external_route = mapping_operator.route `
 	if len(baseWhere) > 0 {
 		runQuery += " WHERE " + baseWhere
 	}
@@ -78,13 +86,14 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		single["external_transdate"] = each["external_transdate"]
 		single["external_price"] = each["price"]
 		single["external_balance_type"] = each["external_balance_type"]
-		// single["external_user_id"] = each["external_user_id"]
-		// single["external_sender"] = each["external_sender"]
-		// single["external_operatorcode"] = each["external_operatorcode"]
-		// single["external_route"] = each["external_route"]
+		single["external_user_id"] = each["external_user_id"]
+		single["external_sender"] = each["external_sender"]
+		single["external_operatorcode"] = each["external_operatorcode"]
+		single["external_route"] = each["external_route"]
 		single["external_smscount"] = each["external_smscount"]
 		single["external_transcount"] = each["external_transcount"]
 		single["invoice_id"] = each["invoice_id"]
+		single["new_route"] = each["new_route"]
 		// single["created_date"] = each["created_date"]
 
 		// findItem, _, errFindItem := conn.DBAppConn.SelectQueryByFieldNameSlice("SELECT item_id, item_name, operator, route, category, uom FROM item WHERE item_id = ?", single["item_id"])
@@ -120,6 +129,32 @@ func GetServerDataFromRequest(conn *connections.Connections, req datastruct.Serv
 		result = append(result, single)
 	}
 
+	return result, err
+}
+
+func GetSenderFromRequest(conn *connections.Connections, req datastruct.ServerDataRequest) ([]map[string]string, error) {
+	var result []map[string]string
+	var err error
+
+	// -- THIS IS BASIC GET REQUEST EXAMPLE LOGIC
+	var baseWhere string
+	var baseParam []interface{}
+
+	lib.AppendWhere(&baseWhere, &baseParam, "account_id = ?", req.AccountID)
+	lib.AppendWhere(&baseWhere, &baseParam, "external_rootparent_account = ?", req.ExternalRootParentAccount)
+	lib.AppendWhere(&baseWhere, &baseParam, "DATE_FORMAT(external_transdate, '%Y%m') = ?", req.MonthUse)
+
+	runQuery := "SELECT distinct(external_sender) FROM server_data "
+	if len(baseWhere) > 0 {
+		runQuery += "WHERE " + baseWhere
+	}
+	lib.AppendOrderBy(&runQuery, req.Param.OrderBy, req.Param.OrderDir)
+	lib.AppendLimit(&runQuery, req.Param.Page, req.Param.PerPage)
+
+	log.Info("LihatQuery-", runQuery)
+
+	result, _, err = conn.DBAppConn.SelectQueryByFieldNameSlice(runQuery, baseParam...)
+	log.Info("LihatSender-", result)
 	return result, err
 }
 

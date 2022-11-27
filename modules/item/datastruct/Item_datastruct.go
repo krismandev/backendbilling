@@ -7,6 +7,7 @@ import (
 //LoginRequest is use for clients login
 type ItemRequest struct {
 	ListItemID []string            `json:"list_item_id"`
+	ListItem   []ItemDataStruct    `json:"list_item"`
 	ItemID     string              `json:"item_id"`
 	ItemName   string              `json:"item_name"`
 	Operator   string              `json:"operator"`

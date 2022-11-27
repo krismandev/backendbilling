@@ -23,12 +23,25 @@ func GetItemFromRequest(conn *connections.Connections, req datastruct.ItemReques
 	lib.AppendWhere(&baseWhere, &baseParam, "category = ?", req.Category)
 	lib.AppendWhere(&baseWhere, &baseParam, "operator = ?", req.Operator)
 	lib.AppendWhere(&baseWhere, &baseParam, "route = ?", req.Route)
-	if len(req.ListItemID) > 0 {
+	if len(req.ListItem) > 0 {
 		var baseIn string
-		for _, prid := range req.ListItemID {
-			lib.AppendComma(&baseIn, &baseParam, "?", prid)
+		// var whereInCol string
+		for index, item := range req.ListItem {
+			var eachElement string
+			// baseIn += "("
+			eachElement = "(?,?)"
+			baseParam = append(baseParam, item.Operator)
+			baseParam = append(baseParam, item.Route)
+
+			// lib.AppendComma(&eachElement, &baseParam, "?", item.Operator)
+			// lib.AppendComma(&eachElement, &baseParam, "?", item.Route)
+			if index != len(req.ListItem)-1 {
+				eachElement += ","
+			}
+
+			baseIn += eachElement
 		}
-		lib.AppendWhereRaw(&baseWhere, "item_id IN ("+baseIn+")")
+		lib.AppendWhereRaw(&baseWhere, "(operator, route) IN ("+baseIn+")")
 	}
 
 	runQuery := "SELECT item_id, item_name, operator, route, uom, category FROM item "
@@ -81,7 +94,6 @@ func InsertItem(conn *connections.Connections, req datastruct.ItemRequest) error
 		return errInsert
 	}
 
-	log.Info("InsertParam - ", baseParam)
 	_, _, err = conn.DBAppConn.Exec("UPDATE control_id set last_id=? where control_id.key=?", insertIdString, "item")
 
 	return err

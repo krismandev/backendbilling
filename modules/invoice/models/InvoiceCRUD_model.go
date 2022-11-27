@@ -5,6 +5,8 @@ import (
 	"backendbillingdashboard/lib"
 	"backendbillingdashboard/modules/invoice/datastruct"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.InvoiceRequest) ([]map[string]interface{}, error) {
@@ -35,7 +37,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 	//TERAKHIR NAMBAH QUERY BUAT NAMPILIN ACCOUNT
 	runQuery := `SELECT invoice.invoice_id, invoice.invoice_no, invoice.invoice_date, invoice.invoicestatus, invoice.account_id, invoice.month_use, 
 	invoice.inv_type_id, invoice.printcounter, invoice.note, invoice.canceldesc, invoice.payment_method ,invoice.last_print_username, 
-	invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.exchange_rate_date, invoice.grand_total, 
+	invoice.last_print_date, invoice.created_at, invoice.created_by, invoice.last_update_username, invoice.exchange_rate_date, invoice.grand_total, invoice.sender,
 	invoice.ppn_amount, invoice.last_update_date, invoice.discount_type, invoice.discount, invoice.ppn ,invoice.paid, invoice.due_date , 
 	invoice_type.inv_type_id as tblinvoice_type_inv_type_id, invoice_type.inv_type_name, invoice_type.server_id as tblinvoice_type_server_id, invoice_type.category, 
 	invoice_type.load_from_server, invoice_type.currency_code, account.account_id as tblaccount_account_id, account.name as tblaccount_name, account.address1, account.address2, 
@@ -79,6 +81,7 @@ func GetInvoiceFromRequest(conn *connections.Connections, req datastruct.Invoice
 		single["due_date"] = each["due_date"]
 		single["grand_total"] = each["grand_total"]
 		single["ppn_amount"] = each["ppn_amount"]
+		single["sender"] = each["sender"]
 
 		invType := make(map[string]interface{})
 		invType["inv_type_id"] = each["tblinvoice_type_inv_type_id"]
@@ -181,6 +184,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.PaymentMethod)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.ExchangeRateDate)
 	lib.AppendComma(&baseIn, &baseParam, "?", req.DueDate)
+	lib.AppendComma(&baseIn, &baseParam, "?", req.Sender)
 
 	// qryCheckControlIdPeriod := "SELECT control_id.key, control_id.period ,last_id FROM control_id WHERE control_id.key = ? AND period = ?"
 	// resCheck, countControlIdPeriod, errCheckControlIdPeriod := conn.DBAppConn.SelectQueryByFieldName(qryCheckControlIdPeriod, "invoice_no", req.MonthUse)
@@ -197,7 +201,7 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 	// 	}
 	// }
 
-	qry := "INSERT INTO invoice (invoice_id, invoice_date,invoicestatus, account_id, month_use ,inv_type_id, last_update_date, discount_type, discount, invoice.note, created_at,created_by, printcounter,ppn, payment_method, exchange_rate_date, due_date) VALUES (" + baseIn + ")"
+	qry := "INSERT INTO invoice (invoice_id, invoice_date,invoicestatus, account_id, month_use ,inv_type_id, last_update_date, discount_type, discount, invoice.note, created_at,created_by, printcounter,ppn, payment_method, exchange_rate_date, due_date, sender) VALUES (" + baseIn + ")"
 	_, _, errInsert := conn.DBAppConn.Exec(qry, baseParam...)
 	if errInsert != nil {
 		return errInsert
@@ -282,15 +286,34 @@ func InsertInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 		// 	}
 		// }
 
-		qryUpdateServerData := "UPDATE server_data set server_data.invoice_id = ? WHERE server_data.account_id = ? AND server_data.server_id = ? AND DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?"
-		var updateServerDataParam []interface{} = []interface{}{
-			insertIdString,
-			req.AccountID,
-			req.ServerID,
-			req.MonthUse,
+		var serverDataWhereClause string
+		var serverDataUpdateParam []interface{}
+
+		serverDataUpdateParam = append(serverDataUpdateParam, insertIdString)
+
+		lib.AppendWhere(&serverDataWhereClause, &serverDataUpdateParam, "server_data.account_id = ?", req.AccountID)
+		lib.AppendWhere(&serverDataWhereClause, &serverDataUpdateParam, "server_data.server_id = ?", req.ServerID)
+		lib.AppendWhere(&serverDataWhereClause, &serverDataUpdateParam, "DATE_FORMAT(server_data.external_transdate, '%Y%m') = ?", req.MonthUse)
+		lib.AppendWhere(&serverDataWhereClause, &serverDataUpdateParam, "server_data.external_sender = ?", req.Sender)
+		lib.AppendWhereRaw(&serverDataWhereClause, "server_data.invoice_id IS NULL")
+		qryUpdateServerData := "UPDATE server_data set server_data.invoice_id = ? "
+
+		if len(serverDataWhereClause) > 0 {
+			qryUpdateServerData += "WHERE " + serverDataWhereClause
 		}
-		_, _, errUpdateServerData := conn.DBAppConn.Exec(qryUpdateServerData, updateServerDataParam...)
+		// var updateServerDataParam []interface{} = []interface{}{
+		// 	insertIdString,
+		// 	req.AccountID,
+		// 	req.ServerID,
+		// 	req.MonthUse,
+		// }
+
+		logrus.Info("LihatQryUpdate-", qryUpdateServerData)
+		logrus.Info("LihatUpdateWhere-", serverDataWhereClause)
+		logrus.Info("LihatUpdateParam-", serverDataUpdateParam)
+		_, _, errUpdateServerData := conn.DBAppConn.Exec(qryUpdateServerData, serverDataUpdateParam...)
 		if errUpdateServerData != nil {
+			logrus.Error("Error in SQL : ", errUpdateServerData)
 			return errUpdateServerData
 		}
 
@@ -399,7 +422,10 @@ func DeleteInvoice(conn *connections.Connections, req datastruct.InvoiceRequest)
 	var err error
 	// -- THIS IS DELETE LOGIC EXAMPLE
 	qry := "UPDATE invoice SET invoicestatus = ?, canceldesc = ? WHERE invoice_id = ?"
+	qryUpdateServerData := "UPDATE server_data SET invoice_id = NULL where server_data.invoice_id = ?"
 	_, _, err = conn.DBAppConn.Exec(qry, "D", req.CancelDesc, req.InvoiceID)
+	_, _, err = conn.DBAppConn.Exec(qryUpdateServerData, req.InvoiceID)
+
 	return err
 }
 

@@ -142,7 +142,7 @@ func GetRootParentAccountFromRequest(conn *connections.Connections, req datastru
 		// }
 		// lib.AppendWhereRaw(&baseWhere, "account_id IN ("+baseIn+")")
 		for _, accountId := range req.ListAccountID {
-			rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT ocs.getrootparent(?) as root", accountId)
+			rootParentAccount, errQry := conn.DBAppConn.GetFirstData("SELECT IF(ocs.getrootparent(?) IS NOT NULL, ocs.getrootparent(?), hutch_ocs.getrootparent(?)) as root", accountId)
 			if errQry != nil {
 				return result, errQry
 			}
